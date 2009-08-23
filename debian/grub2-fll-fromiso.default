@@ -1,0 +1,32 @@
+# Defaults for grub2-fll-fromiso update-grub helper
+# sourced by grub2's update-grub
+# installed at /etc/default/grub2-fll-fromiso by the maintainer scripts
+
+#
+# This is a POSIX shell fragment
+#
+
+# specify where to look for the ISO
+# default: /srv/ISO
+#FLL_GRUB2_ISO_LOCATION="/srv/ISO"
+
+# array for defining ISO prefices --> sidux-*.iso
+# default: "sidux- fullstory-"
+#FLL_GRUB2_ISO_PREFIX="sidux-"
+
+# set default language
+# default: en_US
+#FLL_GRUB2_LANG="de_DE"
+
+# override the default timezone.
+# default: UTC
+#FLL_GRUB2_TZ="Europe/Berlin"
+
+# kernel framebuffer resolution, see
+# http://manual.sidux.com/de/cheatcodes-vga-de.htm#vga
+# default: 791
+#FLL_GRUB2_VGA="791"
+
+# additional cheatcodes
+# default: noeject
+#FLL_GRUB2_CHEATCODE="noeject"

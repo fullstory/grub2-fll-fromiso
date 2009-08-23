@@ -1,0 +1,18 @@
+Source: grub2-fll-fromiso
+Section: admin
+Priority: extra
+Maintainer: Stefan Lippers-Hollmann <s.l-h@gmx.de>
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.8.3
+Vcs-Svn: svn://svn.berlios.de/fullstory/sidux-irc/trunk
+Vcs-Browser: http://svn.berlios.de/wsvn/fullstory/sidux-irc/trunk/
+
+Package: grub2-fll-fromiso
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Enhances: grub-pc
+Description: update-grub (grub2) plugin for sidux fromiso
+ Automatically adds and updates sidux fromiso snippets for grub.cfg of the 
+ GRand Unified Bootloader, version 2.
+ .
+ Please configure /etc/default/grub2-fll-fromiso
