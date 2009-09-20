@@ -1,6 +1,10 @@
 grub2-fll-fromiso (0.0.0) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
   * Initial Release.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 23 Aug 2009 17:44:18 +0200
+  [ Joaquim Boura ]
+  * filling some usefull code in
+
+ -- Joaquim Boura <x-un-i@sidux.com>  Sun, 20 Sep 2009 18:48:36 +0200
