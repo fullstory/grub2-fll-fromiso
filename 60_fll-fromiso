@@ -18,8 +18,8 @@
 if [ -r /etc/default/grub2-fll-fromiso ]; then
 	. /etc/default/grub2-fll-fromiso 
 fi
-#FLL_GRUB2_ISO_LOCATION="${FLL_GRUB2_ISO_LOCATION:-"/var/cache/pyfll"}"
-FLL_GRUB2_ISO_LOCATION="${FLL_GRUB2_ISO_LOCATION:-"/home/x-un-i/Work/Builder/iso"}"
+
+FLL_GRUB2_ISO_LOCATION="${FLL_GRUB2_ISO_LOCATION:-"/var/cache/pyfll"}"
 FLL_GRUB2_ISO_PREFIX="${FLL_GRUB2_ISO_PREFIX:-"sidux"}"
 FLL_GRUB2_LANG="${FLL_GRUB2_LANG:-"de_DE"}"
 FLL_GRUB2_TZ="${FLL_GRUB2_TZ:-"Europe/Berlin"}"
