@@ -7,5 +7,6 @@ grub2-fll-fromiso (0.0.0) UNRELEASED; urgency=low
   [ Joaquim Boura ]
   * filling some usefull code in
   * remove dev defaults
+  * added myself to the copyrights holder
 
- -- Joaquim Boura <x-un-i@sidux.com>  Sun, 20 Sep 2009 18:51:20 +0200
+ -- Joaquim Boura <x-un-i@sidux.com>  Fri, 27 Nov 2009 23:26:36 +0100
