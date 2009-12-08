@@ -1,10 +1,16 @@
+grub2-fll-fromiso (0.0.2) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 08 Dec 2009 18:40:23 +0100
+
 grub2-fll-fromiso (0.0.1) unstable; urgency=low
 
   [ Stefan Lippers-Hollmann ]
   * Initial Release.
 
   [ Joaquim Boura ]
-  * filling some usefull code in
+  * filling some useful code in
   * remove dev defaults
   * added myself to the copyrights holder
 
