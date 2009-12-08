@@ -1,7 +1,6 @@
-grub2-fll-fromiso (0.0.0) UNRELEASED; urgency=low
+grub2-fll-fromiso (0.0.1) unstable; urgency=low
 
   [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
   * Initial Release.
 
   [ Joaquim Boura ]
