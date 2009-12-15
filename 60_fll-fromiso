@@ -31,18 +31,21 @@ FLL_GRUB2_ISO_LOCATION="${FLL_GRUB2_ISO_LOCATION:-"/srv/ISO"}"
 FLL_GRUB2_ISO_PREFIX="${FLL_GRUB2_ISO_PREFIX:-"sidux fullstory"}"
 FLL_GRUB2_LANG="${FLL_GRUB2_LANG:-"en_EN"}"
 FLL_GRUB2_TZ="${FLL_GRUB2_TZ:-"UTC"}"
-FLL_GRUB2_VGA="${FLL_GRUB2_VGA:-"794"}"
-FLL_GRUB2_CHEATCODE="${FLL_GRUB2_CHEATCODE:-"quiet noeject"}"
+FLL_GRUB2_CHEATCODE="${FLL_GRUB2_CHEATCODE:-"vga=791 quiet noeject"}"
 
-# we need isoinfo if it's not there go out
+# we need isoinfo, if it's not there bail out
 ISOINFO="$(which isoinfo)"
 if [ -z "${ISOINFO}" ]; then
 	exit 
 fi
 
 # find ISO
-for prefix in $FLL_GRUB2_ISO_PREFIX; do
-	FROMISO="${FROMISO} $(find ${FLL_GRUB2_ISO_LOCATION} -maxdepth 1 -name ${prefix}\*.iso)"
+for location in $FLL_GRUB2_ISO_LOCATION; do
+	if [ -d "${location}" ]; then
+		for prefix in $FLL_GRUB2_ISO_PREFIX; do
+			FROMISO="${FROMISO} $(find ${location} -maxdepth 1 -name ${prefix}\*.iso)"
+		done
+	fi
 done
 
 # no iso found quit
@@ -51,7 +54,7 @@ if [ -z "${FROMISO}" ]; then
 fi
 
 # assemble cmdline
-CMDLINE="boot=fll vga=${FLL_GRUB2_VGA} lang=${FLL_GRUB2_LANG} TZ=${FLL_GRUB2_TZ} ${FLL_GRUB2_CHEATCODE} "
+CMDLINE="boot=fll lang=${FLL_GRUB2_LANG} TZ=${FLL_GRUB2_TZ} ${FLL_GRUB2_CHEATCODE} "
 
 # create a tem device.map as the actual can be not uptodate
 DEVICE_MAP_TMP=$(mktemp)

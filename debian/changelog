@@ -1,8 +1,11 @@
-grub2-fll-fromiso (0.2.1) UNRELEASED; urgency=low
+grub2-fll-fromiso (0.2.1) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * don't fail if not all of the directories in FLL_GRUB2_ISO_LOCATION exist.
+  * in the light of KMS, don't force a framebuffer resolution and make it 
+    optional as  part of FLL_GRUB2_CHEATCODE.
+  * minor spelling and documentation fixes.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 15 Dec 2009 08:58:23 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 15 Dec 2009 09:34:58 +0100
 
 grub2-fll-fromiso (0.2.0) unstable; urgency=low
 

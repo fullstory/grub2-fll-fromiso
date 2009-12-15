@@ -10,7 +10,7 @@
 # default: /srv/ISO
 #FLL_GRUB2_ISO_LOCATION="/srv/ISO"
 
-# array for defining ISO prefices --> sidux-*.iso
+# array for defining ISO prefices --> sidux-*.iso, non-recursive
 # default: "sidux- fullstory-"
 #FLL_GRUB2_ISO_PREFIX="sidux-"
 
@@ -22,11 +22,6 @@
 # default: UTC
 #FLL_GRUB2_TZ="Europe/Berlin"
 
-# kernel framebuffer resolution, see
-# http://manual.sidux.com/de/cheatcodes-vga-de.htm#vga
-# default: 791
-#FLL_GRUB2_VGA="791"
-
 # additional cheatcodes
 # default: quiet noeject
-#FLL_GRUB2_CHEATCODE="quiet noeject"
+#FLL_GRUB2_CHEATCODE="vga=791 quiet noeject"
