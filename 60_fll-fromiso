@@ -69,7 +69,7 @@ for iso_image in $FROMISO; do
 
 	for kernel in ${kernels}; do
 		cat << EOF
-menuentry "${iso_image%.[iI][sS][oO]} (${kernel#vmlinuz\-})" {
+menuentry "$(basename ${iso_image} .iso) (${kernel#vmlinuz\-})" {
 	search --no-floppy --fs-uuid --set ${cur_uuid}
 	loopback loop ${stripped_path}
 	linux (loop)/boot/${kernel} fromhd=UUID=${cur_uuid} fromiso=${stripped_path} $CMDLINE
