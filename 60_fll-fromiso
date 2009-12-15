@@ -21,14 +21,11 @@ if [ -r /etc/default/grub2-fll-fromiso ]; then
 fi
 
 FLL_GRUB2_ISO_LOCATION="${FLL_GRUB2_ISO_LOCATION:-"/var/cache/pyfll"}"
-FLL_GRUB2_ISO_PREFIX="${FLL_GRUB2_ISO_PREFIX:-"sidux"}"
+FLL_GRUB2_ISO_PREFIX="${FLL_GRUB2_ISO_PREFIX:-"sidux fullstory"}"
 FLL_GRUB2_LANG="${FLL_GRUB2_LANG:-"de_DE"}"
 FLL_GRUB2_TZ="${FLL_GRUB2_TZ:-"Europe/Berlin"}"
 FLL_GRUB2_VGA="${FLL_GRUB2_VGA:-"794"}"
 FLL_GRUB2_CHEATCODE="${FLL_GRUB2_CHEATCODE:-"quiet noeject screen=1400x1050 xrate=100"}"
-
-# source overrides
-# [ -r /etc/default/grub2-fll-fromiso ] && . /etc/default/grub2-fll-fromiso
 
 # we need isoinfo if it's not there go out
 ISOINFO="$(which isoinfo)"
@@ -37,8 +34,9 @@ if [ -z "${ISOINFO}" ]; then
 fi
 
 # find ISO
-FROMISO="$(find ${FLL_GRUB2_ISO_LOCATION} -name ${FLL_GRUB2_ISO_PREFIX}*.iso)"
-# FROMISO="${FLL_GRUB2_ISO_LOCATION}/sidux-snapshot-kde-full-i386-amd64-200908230118.iso"
+for prefix in $FLL_GRUB2_ISO_PREFIX; do
+	FROMISO="${FROMISO} $(find ${FLL_GRUB2_ISO_LOCATION} -maxdepth 1 -name ${prefix}\*.iso)"
+done
 
 # no iso found quit
 if [ -z "${FROMISO}" ]; then
@@ -65,8 +63,9 @@ for iso_image in $FROMISO; do
 	fi
 
 	kernels="$(${ISOINFO} -J -l -i ${iso_image} | awk '/vmlinuz/{print $12}')"
-	initrd_suffix="$(${ISOINFO} -J -l -i ${iso_image} | awk '/initrd/{print $12}') | cut -d\. -f2"
-	[ "x${initrd_suffix}" = "ximg" ] || initrd_suffix=""
+	if ${ISOINFO} -J -l -i ${iso_image} | grep -q initrd\\.img; then
+		initrd_suffix=".img"
+	fi
 
 	for kernel in ${kernels}; do
 		cat << EOF
@@ -74,9 +73,11 @@ menuentry "${iso_image%.[iI][sS][oO]} (${kernel#vmlinuz\-})" {
 	search --no-floppy --fs-uuid --set ${cur_uuid}
 	loopback loop ${stripped_path}
 	linux (loop)/boot/${kernel} fromhd=UUID=${cur_uuid} fromiso=${stripped_path} $CMDLINE
-	initrd (loop)/boot/initrd${kernel#vmlinuz}${initrd_suffix}
+	initrd (loop)/boot/initrd${initrd_suffix}${kernel#vmlinuz}
 }
 EOF
 	echo "Found fromiso: $(basename ${iso_image}) on ${cur_device}" >&2
 	done
 done
+
+rm -f "${DEVICE_MAP_TMP}"
