@@ -28,5 +28,5 @@
 #FLL_GRUB2_VGA="791"
 
 # additional cheatcodes
-# default: noeject
-#FLL_GRUB2_CHEATCODE="noeject"
+# default: quiet noeject
+#FLL_GRUB2_CHEATCODE="quiet noeject"
