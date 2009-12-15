@@ -1,4 +1,4 @@
-grub2-fll-fromiso (0.1.4) unstable; urgency=low
+grub2-fll-fromiso (0.2.0) unstable; urgency=low
 
   * initialise prepare_boot_cache for grub2 stanzas.
   * initial lvm2 support.
