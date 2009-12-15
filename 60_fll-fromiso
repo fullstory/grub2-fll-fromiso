@@ -65,7 +65,14 @@ for iso_image in $FROMISO; do
 	if [ "$(grub-probe -t abstraction --device ${cur_device} | sed -e 's,.*\(lvm\).*,\1,')" = "lvm" ]; then
 		cur_fromhd="${cur_device}"
 	else
-		cur_fromhd="UUID=$(grub-probe --device-map=${DEVICE_MAP_TMP} --target=fs_uuid ${iso_image})"
+		cur_fromhd="$(grub-probe --device-map=${DEVICE_MAP_TMP} --target=fs_uuid ${iso_image})"
+		cur_fromhd_fs="$(/sbin/blkid -o udev -u filesystem -p ${cur_device} | grep ^ID_FS_TYPE | cut -d\= -f2)"
+
+		if [ "x${cur_fromhd_fs}" = "xmsdos" ] || [ "x${cur_fromhd_fs}" = "xntfs" ] || [ "x${cur_fromhd_fs}" = "xvfat" ]; then
+			cur_fromhd="/dev/disk/by-uuid/$(/sbin/blkid -o udev -u filesystem -p ${cur_device} | grep ^ID_FS_UUID_ENC | cut -d\= -f2)"
+		else
+			cur_fromhd="UUID=${cur_fromhd}"
+		fi
 	fi
 
 	mountpoint="$(awk -v var="$cur_device" '{if ($1 == var){print $2}}' /proc/mounts)"
