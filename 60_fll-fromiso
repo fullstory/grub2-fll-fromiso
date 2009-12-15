@@ -15,6 +15,13 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
+# source common grub2 functions
+prefix=/usr
+exec_prefix=${prefix}
+bindir=${exec_prefix}/bin
+libdir=${exec_prefix}/lib
+. ${libdir}/grub/grub-mkconfig_lib
+
 # override tool behaviour through /etc/default/grub2-fll-fromiso
 if [ -r /etc/default/grub2-fll-fromiso ]; then
 	. /etc/default/grub2-fll-fromiso 
@@ -52,7 +59,11 @@ grub-mkdevicemap -m "${DEVICE_MAP_TMP}"
 
 for iso_image in $FROMISO; do
 	cur_device="$(grub-probe --device-map=${DEVICE_MAP_TMP} --target=device ${iso_image})"
-	cur_uuid="$(grub-probe --device-map=${DEVICE_MAP_TMP} --target=fs_uuid ${iso_image})"
+	if [ "$(grub-probe -t abstraction --device ${cur_device} | sed -e 's,.*\(lvm\).*,\1,')" = "lvm" ]; then
+		cur_fromhd="${cur_device}"
+	else
+		cur_fromhd="UUID=$(grub-probe --device-map=${DEVICE_MAP_TMP} --target=fs_uuid ${iso_image})"
+	fi
 
 	mountpoint="$(awk -v var="$cur_device" '{if ($1 == var){print $2}}' /proc/mounts)"
 	stripped_path="${iso_image##$mountpoint}"
@@ -68,11 +79,14 @@ for iso_image in $FROMISO; do
 	fi
 
 	for kernel in ${kernels}; do
+		printf "menuentry \"$(basename ${iso_image} .iso) (${kernel#vmlinuz\-})\" {\n"
+
+		prepare_boot_cache="$(prepare_grub_to_access_device ${cur_device} | sed -e "s/^/\t/")"
+		printf '%s\n' "${prepare_boot_cache}"
+
 		cat << EOF
-menuentry "$(basename ${iso_image} .iso) (${kernel#vmlinuz\-})" {
-	search --no-floppy --fs-uuid --set ${cur_uuid}
 	loopback loop ${stripped_path}
-	linux (loop)/boot/${kernel} fromhd=UUID=${cur_uuid} fromiso=${stripped_path} $CMDLINE
+	linux (loop)/boot/${kernel} fromhd=${cur_fromhd} fromiso=${stripped_path} $CMDLINE
 	initrd (loop)/boot/initrd${initrd_suffix}${kernel#vmlinuz}
 }
 EOF
