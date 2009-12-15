@@ -10,7 +10,9 @@ Vcs-Browser: http://svn.berlios.de/wsvn/fullstory/sidux-irc/trunk/
 
 Package: grub2-fll-fromiso
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends},
+ ${misc:Depends},
+ genisoimage
 Enhances: grub-pc
 Description: update-grub (grub2) plugin for sidux fromiso
  Automatically adds and updates sidux fromiso snippets for grub.cfg of the 

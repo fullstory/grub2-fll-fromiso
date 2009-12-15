@@ -31,13 +31,13 @@ FLL_GRUB2_CHEATCODE="${FLL_GRUB2_CHEATCODE:-"quiet noeject screen=1400x1050 xrat
 # [ -r /etc/default/grub2-fll-fromiso ] && . /etc/default/grub2-fll-fromiso
 
 # we need isoinfo if it's not there go out
-ISOINFO=`which isoinfo`
+ISOINFO="$(which isoinfo)"
 if [ -z "${ISOINFO}" ]; then
 	exit 
 fi
 
 # find ISO
-FROMISO=`find ${FLL_GRUB2_ISO_LOCATION} -name ${FLL_GRUB2_ISO_PREFIX}*.iso`
+FROMISO="$(find ${FLL_GRUB2_ISO_LOCATION} -name ${FLL_GRUB2_ISO_PREFIX}*.iso)"
 # FROMISO="${FLL_GRUB2_ISO_LOCATION}/sidux-snapshot-kde-full-i386-amd64-200908230118.iso"
 
 # no iso found quit
@@ -49,15 +49,14 @@ fi
 CMDLINE="boot=fll vga=${FLL_GRUB2_VGA} lang=${FLL_GRUB2_LANG} TZ=${FLL_GRUB2_TZ} ${FLL_GRUB2_CHEATCODE} "
 
 # create a tem device.map as the actual can be not uptodate
-DEVICE_MAP_TMP=`mktemp` 
+DEVICE_MAP_TMP=$(mktemp)
 grub-mkdevicemap -m "${DEVICE_MAP_TMP}"
 
 for iso_image in $FROMISO; do
+	cur_device="$(grub-probe --device-map=${DEVICE_MAP_TMP} --target=device ${iso_image})"
+	cur_uuid="$(grub-probe --device-map=${DEVICE_MAP_TMP} --target=fs_uuid ${iso_image})"
 
-	cur_device=`grub-probe --device-map=${DEVICE_MAP_TMP} --target=device ${iso_image}`
-	cur_uuid=`grub-probe --device-map=${DEVICE_MAP_TMP} --target=fs_uuid ${iso_image}`
-
-	mountpoint=`awk -v var="$cur_device" '{if ($1 == var){print $2}}' /proc/mounts`
+	mountpoint="$(awk -v var="$cur_device" '{if ($1 == var){print $2}}' /proc/mounts)"
 	stripped_path="${iso_image##$mountpoint}"
 
 
@@ -65,17 +64,19 @@ for iso_image in $FROMISO; do
 		stripped_path="/${stripped_path}"
 	fi
 
-	kernels=`${ISOINFO} -J -l -i ${iso_image} |awk '/vmlinuz/{print $12}' |sed 's/vmlinuz\-//'`
+	kernels="$(${ISOINFO} -J -l -i ${iso_image} | awk '/vmlinuz/{print $12}')"
+	initrd_suffix="$(${ISOINFO} -J -l -i ${iso_image} | awk '/initrd/{print $12}') | cut -d\. -f2"
+	[ "x${initrd_suffix}" = "ximg" ] || initrd_suffix=""
 
 	for kernel in ${kernels}; do
 		cat << EOF
-menuentry "${FLL_GRUB2_ISO_PREFIX} ($kernel)" {
+menuentry "${iso_image%.[iI][sS][oO]} (${kernel#vmlinuz\-})" {
 	search --no-floppy --fs-uuid --set ${cur_uuid}
 	loopback loop ${stripped_path}
-	linux (loop)/boot/vmlinuz-${kernel} fromhd=UUID=${cur_uuid} fromiso=${stripped_path} $CMDLINE
-	initrd (loop)/boot/initrd.img-${kernel}
+	linux (loop)/boot/${kernel} fromhd=UUID=${cur_uuid} fromiso=${stripped_path} $CMDLINE
+	initrd (loop)/boot/initrd${kernel#vmlinuz}${initrd_suffix}
 }
 EOF
+	echo "Found fromiso: $(basename ${iso_image}) on ${cur_device}" >&2
 	done
-
 done
