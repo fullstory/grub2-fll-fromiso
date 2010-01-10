@@ -90,7 +90,7 @@ for iso_image in $FROMISO; do
 
 	for kernel in ${kernels}; do
 		printf "menuentry \"$(basename ${iso_image} .iso) (${kernel#vmlinuz\-})\" {\n"
-
+		printf "\tinsmod iso9660\n"
 		prepare_boot_cache="$(prepare_grub_to_access_device ${cur_device} | sed -e "s/^/\t/")"
 		printf '%s\n' "${prepare_boot_cache}"
 

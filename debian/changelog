@@ -1,8 +1,13 @@
 grub2-fll-fromiso (0.2.3) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 15 Dec 2009 18:01:59 +0100
+  [ Joaquim Boura ]
+  * adding the module iso9660  makes fromiso also starting when the base HD
+    is an USB device.
+
+ -- Joaquim Boura <x-un-i@sidux.com>  Sun, 10 Jan 2010 12:13:58 +0100
 
 grub2-fll-fromiso (0.2.2) unstable; urgency=low
 
