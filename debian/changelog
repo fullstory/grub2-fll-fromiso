@@ -1,9 +1,5 @@
-grub2-fll-fromiso (0.2.3) UNRELEASED; urgency=low
+grub2-fll-fromiso (0.2.3) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Joaquim Boura ]
   * adding the module iso9660  makes fromiso also starting when the base HD
     is an USB device.
 
