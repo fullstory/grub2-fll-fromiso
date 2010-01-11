@@ -1,3 +1,9 @@
+grub2-fll-fromiso (0.2.4) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 11 Jan 2010 01:33:15 +0100
+
 grub2-fll-fromiso (0.2.3) unstable; urgency=low
 
   * adding the module iso9660  makes fromiso also starting when the base HD
