@@ -1,8 +1,10 @@
-grub2-fll-fromiso (0.2.4) UNRELEASED; urgency=low
+grub2-fll-fromiso (0.2.4) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * switch to dpkg-source 3.0 (native) format.
+  * update copyright years.
+  * bump standards version to 3.8.4, no changes necessary.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 11 Jan 2010 01:33:15 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 25 Apr 2010 23:57:44 +0200
 
 grub2-fll-fromiso (0.2.3) unstable; urgency=low
 

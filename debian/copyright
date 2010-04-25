@@ -6,7 +6,7 @@ It was downloaded from:
 
 Copyright:
     © 2009 Joaquim Boura <x-un-i@sidux.com>
-    © 2009 Stefan Lippers-Hollmann <s.l-h@gmx.de>
+    © 2009-2010 Stefan Lippers-Hollmann <s.l-h@gmx.de>
 
 License:
     This package is free software; you can redistribute it and/or modify
@@ -27,7 +27,7 @@ On Debian systems, the complete text of the GNU General
 Public License version 2 can be found in `/usr/share/common-licenses/GPL-2'.
 
 The Debian packaging is:
-    Copyright (C) 2009 Stefan Lippers-Hollmann <s.l-h@gmx.de>
+    Copyright © 2009-2010 Stefan Lippers-Hollmann <s.l-h@gmx.de>
 
 and is licensed under the GPL version 2+, see 
 `/usr/share/common-licenses/GPL-2'.
