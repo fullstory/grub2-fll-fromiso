@@ -1,3 +1,9 @@
+grub2-fll-fromiso (0.2.6) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 25 May 2010 21:00:52 +0200
+
 grub2-fll-fromiso (0.2.5) unstable; urgency=low
 
   * drop vga= kernel parameter, in the presence of KMS aware drivers it's
