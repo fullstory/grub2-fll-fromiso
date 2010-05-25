@@ -1,8 +1,9 @@
-grub2-fll-fromiso (0.2.6) UNRELEASED; urgency=low
+grub2-fll-fromiso (0.2.6) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * fix Vcs-Svn/ Vcs-Browser URI.
+  * hard depend on grub-pc, instead of merely enhancing it.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 25 May 2010 21:00:52 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 25 May 2010 21:02:51 +0200
 
 grub2-fll-fromiso (0.2.5) unstable; urgency=low
 
