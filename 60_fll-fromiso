@@ -31,12 +31,12 @@ FLL_GRUB2_ISO_LOCATION="${FLL_GRUB2_ISO_LOCATION:-"/srv/ISO"}"
 FLL_GRUB2_ISO_PREFIX="${FLL_GRUB2_ISO_PREFIX:-"sidux fullstory"}"
 FLL_GRUB2_LANG="${FLL_GRUB2_LANG:-"en_EN"}"
 FLL_GRUB2_TZ="${FLL_GRUB2_TZ:-"UTC"}"
-FLL_GRUB2_CHEATCODE="${FLL_GRUB2_CHEATCODE:-"vga=791 quiet noeject"}"
+FLL_GRUB2_CHEATCODE="${FLL_GRUB2_CHEATCODE:-"quiet noeject"}"
 
-# we need isoinfo, if it's not there bail out
+# we need isoinfo, bail out if it's available
 ISOINFO="$(which isoinfo)"
 if [ -z "${ISOINFO}" ]; then
-	exit 
+	exit 1
 fi
 
 # find ISO
@@ -48,9 +48,9 @@ for location in $FLL_GRUB2_ISO_LOCATION; do
 	fi
 done
 
-# no iso found quit
+# no iso found, quit
 if [ -z "${FROMISO}" ]; then
-	exit
+	exit 0
 fi
 
 # assemble cmdline
