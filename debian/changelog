@@ -1,8 +1,8 @@
-grub2-fll-fromiso (0.2.9) UNRELEASED; urgency=low
+grub2-fll-fromiso (0.2.9) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * adapt to aptosid.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 08 Aug 2010 04:30:24 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 29 Aug 2010 04:21:51 +0200
 
 grub2-fll-fromiso (0.2.8) unstable; urgency=low
 

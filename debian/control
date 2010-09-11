@@ -14,8 +14,8 @@ Depends: ${shlibs:Depends},
  ${misc:Depends},
  genisoimage,
  grub-pc
-Description: update-grub (grub2) plugin for sidux fromiso
- Automatically adds and updates sidux fromiso snippets for grub.cfg of the 
+Description: update-grub (grub2) plugin for fullstory fromiso
+ Automatically adds and updates fullstory fromiso snippets for grub.cfg of the 
  GRand Unified Bootloader, version 2.
  .
  Please configure /etc/default/grub2-fll-fromiso
