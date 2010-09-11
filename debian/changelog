@@ -1,8 +1,8 @@
-grub2-fll-fromiso (0.2.8) UNRELEASED; urgency=low
+grub2-fll-fromiso (0.2.8) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * switch to compat level 8.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 03 Aug 2010 18:51:47 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 08 Aug 2010 04:30:00 +0200
 
 grub2-fll-fromiso (0.2.7) unstable; urgency=low
 
