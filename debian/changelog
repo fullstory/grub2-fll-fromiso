@@ -1,3 +1,9 @@
+grub2-fll-fromiso (0.2.8) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 03 Aug 2010 18:51:47 +0200
+
 grub2-fll-fromiso (0.2.7) unstable; urgency=low
 
   * bump standards version to 3.9.1, no changes necessary.
