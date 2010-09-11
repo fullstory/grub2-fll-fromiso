@@ -83,7 +83,7 @@ for iso_image in $FROMISO; do
 		stripped_path="/${stripped_path}"
 	fi
 
-	kernels="$(${ISOINFO} -J -l -i ${iso_image} | awk '/vmlinuz/{print $12}')"
+	kernels="$(${ISOINFO} -J -l -i ${iso_image} | sed -n 's/.*\(vmlinuz.*\)/\1/p')"
 	if ${ISOINFO} -J -l -i ${iso_image} | grep -q initrd\\.img; then
 		initrd_suffix=".img"
 	fi
