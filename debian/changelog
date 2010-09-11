@@ -1,3 +1,9 @@
+grub2-fll-fromiso (0.2.11) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 02 Sep 2010 19:42:01 +0200
+
 grub2-fll-fromiso (0.2.10) unstable; urgency=low
 
   * make isoinfo parsing more robust.
