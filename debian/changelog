@@ -1,8 +1,8 @@
-grub2-fll-fromiso (0.2.11) UNRELEASED; urgency=low
+grub2-fll-fromiso (0.2.11) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * fix x-un-i's mail address.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 02 Sep 2010 19:42:01 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 06 Oct 2010 14:51:43 +0200
 
 grub2-fll-fromiso (0.2.10) unstable; urgency=low
 
@@ -57,7 +57,7 @@ grub2-fll-fromiso (0.2.3) unstable; urgency=low
   * adding the module iso9660  makes fromiso also starting when the base HD
     is an USB device.
 
- -- Joaquim Boura <x-un-i@sidux.com>  Sun, 10 Jan 2010 12:13:58 +0100
+ -- Joaquim Boura <x-un-i@berlios.de>  Sun, 10 Jan 2010 12:13:58 +0100
 
 grub2-fll-fromiso (0.2.2) unstable; urgency=low
 
@@ -118,4 +118,4 @@ grub2-fll-fromiso (0.0.1) unstable; urgency=low
   * remove dev defaults
   * added myself to the copyrights holder
 
- -- Joaquim Boura <x-un-i@sidux.com>  Fri, 27 Nov 2009 23:26:36 +0100
+ -- Joaquim Boura <x-un-i@berlios.de>  Fri, 27 Nov 2009 23:26:36 +0100
