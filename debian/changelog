@@ -1,8 +1,12 @@
 grub2-fll-fromiso (0.2.13) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 29 Apr 2011 04:21:53 +0200
+  [ Joaquim Boura ]
+  * fixed typo when setting timezone cheat. (thks latino for noticing)
+
+ -- Joaquim Boura <x-un-i@berlios.de>  Fri, 27 May 2011 19:16:00 +0200
 
 grub2-fll-fromiso (0.2.12) unstable; urgency=low
 

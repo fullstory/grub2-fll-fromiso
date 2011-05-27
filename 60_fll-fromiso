@@ -54,7 +54,7 @@ if [ -z "${FROMISO}" ]; then
 fi
 
 # assemble cmdline
-CMDLINE="boot=fll lang=${FLL_GRUB2_LANG} TZ=${FLL_GRUB2_TZ} ${FLL_GRUB2_CHEATCODE} "
+CMDLINE="boot=fll lang=${FLL_GRUB2_LANG} tz=${FLL_GRUB2_TZ} ${FLL_GRUB2_CHEATCODE} "
 
 # create a tem device.map as the actual can be not uptodate
 DEVICE_MAP_TMP=$(mktemp)
