@@ -1,8 +1,14 @@
 grub2-fll-fromiso (0.2.14) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 27 May 2011 22:17:15 +0200
+  [ Niall Walsh ]
+  * retry isoinfo without -J if it fails (xorriso + efi hates Joliet)
+  * numerically sort the isos
+  * fix a couple of comment typos
+
+ -- Niall Walsh <niallwalsh@users.berlios.de>  Tue, 05 Jul 2011 17:35:10 +0100
 
 grub2-fll-fromiso (0.2.13) unstable; urgency=low
 
