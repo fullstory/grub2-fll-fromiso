@@ -1,9 +1,5 @@
-grub2-fll-fromiso (0.2.14) UNRELEASED; urgency=low
+grub2-fll-fromiso (0.2.14) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Niall Walsh ]
   * retry isoinfo without -J if it fails (xorriso + efi hates Joliet)
   * numerically sort the isos
   * fix a couple of comment typos
