@@ -13,7 +13,7 @@ Architecture: all
 Depends: ${shlibs:Depends},
  ${misc:Depends},
  genisoimage,
- grub-pc|grub-efi-amd64|grub-efi-i386
+ grub-pc | grub-efi-amd64
 Description: update-grub (grub2) plugin for fullstory fromiso
  Automatically adds and updates fullstory fromiso snippets for grub.cfg of the 
  GRand Unified Bootloader, version 2.
