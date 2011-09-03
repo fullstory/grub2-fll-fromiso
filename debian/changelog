@@ -1,8 +1,14 @@
+grub2-fll-fromiso (0.2.16) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 03 Sep 2011 16:00:31 +0200
+
 grub2-fll-fromiso (0.2.15) unstable; urgency=low
 
   * changed dependencies to include the grub-efi variants.
 
- -- Joaquim Boura <x-un-i@comus>  Sat, 03 Sep 2011 15:46:40 +0200
+ -- Joaquim Boura <x-un-i@berlios.de>  Sat, 03 Sep 2011 15:46:40 +0200
 
 grub2-fll-fromiso (0.2.14) unstable; urgency=low
 
