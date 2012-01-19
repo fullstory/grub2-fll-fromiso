@@ -1,8 +1,9 @@
-grub2-fll-fromiso (0.2.17) UNRELEASED; urgency=low
+grub2-fll-fromiso (0.3.0) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * switch from vol_id/ udev compatibility mode to native blkid invocations,
+    as these are deprecated in util-linux >= 2.21.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 16 Jan 2012 01:34:30 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 19 Jan 2012 14:04:02 +0100
 
 grub2-fll-fromiso (0.2.16) unstable; urgency=low
 
