@@ -75,7 +75,7 @@ for iso_image in $FROMISO; do
 		fi
 	fi
 
-	mountpoint="$(awk -v var="$cur_device" '{if ($1 == var){print $2}}' /proc/mounts)"
+	mountpoint="$(awk -v var="$cur_device" '{if ($1 == var){print $2}}' /proc/mounts | head -n1)"
 	stripped_path="${iso_image##$mountpoint}"
 
 
