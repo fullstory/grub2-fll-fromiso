@@ -1,8 +1,8 @@
-grub2-fll-fromiso (0.3.4) UNRELEASED; urgency=low
+grub2-fll-fromiso (0.3.4) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * optimise head crash, thanks to bfree.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 06 Jun 2012 03:56:58 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 06 Jun 2012 04:01:16 +0200
 
 grub2-fll-fromiso (0.3.3) unstable; urgency=medium
 
