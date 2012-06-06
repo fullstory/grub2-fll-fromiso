@@ -1,3 +1,9 @@
+grub2-fll-fromiso (0.3.4) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 06 Jun 2012 03:56:58 +0200
+
 grub2-fll-fromiso (0.3.3) unstable; urgency=medium
 
   * cope with the revision number of ISO9660 (compared to udf) ISOs as
