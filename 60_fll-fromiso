@@ -83,7 +83,7 @@ for iso_image in $FROMISO; do
 		stripped_path="/${stripped_path}"
 	fi
 
-	kernels="$( ( ${ISOINFO} -J -l -i ${iso_image} 2>/dev/null || ${ISOINFO} -l -i ${iso_image} ) | tr A-Z a-z | sed -n 's/.*\(vmlinuz.*\)/\1/p' | cut -d\; -f1)"
+	kernels="$( ( ${ISOINFO} -J -f -i ${iso_image} 2>/dev/null || ${ISOINFO} -f -i ${iso_image} ) | sed -n -e 's|\;[0-9]*$||' -e 'y|ABCDEFGHIJKLMNOPQRSTUVWXYZ|abcdefghijklmnopqrstuvwxyz|' -e 's|/boot/\(vmlinuz.*\)|\1|p')"
 	if ( ${ISOINFO} -J -l -i ${iso_image} 2> /dev/null|| ${ISOINFO} -l -i ${iso_image}) | tr A-Z a-z | grep -q initrd\\.img; then
 		initrd_suffix=".img"
 	fi
