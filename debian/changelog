@@ -1,8 +1,8 @@
-grub2-fll-fromiso (0.3.6) UNRELEASED; urgency=low
+grub2-fll-fromiso (0.3.6) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * slightly tune parser performance.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 12 Jan 2013 03:02:31 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 17 Apr 2013 01:35:32 +0200
 
 grub2-fll-fromiso (0.3.5) unstable; urgency=low
 
