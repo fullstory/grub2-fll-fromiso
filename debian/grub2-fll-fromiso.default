@@ -23,5 +23,5 @@
 #FLL_GRUB2_TZ="Europe/Berlin"
 
 # additional cheatcodes
-# default: quiet noeject
-#FLL_GRUB2_CHEATCODE="quiet noeject"
+# default: quiet systemd.show_status=1 noeject
+#FLL_GRUB2_CHEATCODE="quiet systemd.show_status=1 noeject"
