@@ -1,3 +1,9 @@
+grub2-fll-fromiso (0.3.9) UNRELEASED; urgency=medium
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 30 Jun 2014 04:22:36 +0200
+
 grub2-fll-fromiso (0.3.8) unstable; urgency=medium
 
   * supply systemd.show_status=1 by default.
