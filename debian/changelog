@@ -1,9 +1,5 @@
-grub2-fll-fromiso (0.3.9) UNRELEASED; urgency=medium
+grub2-fll-fromiso (0.3.9) unstable; urgency=medium
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Niall Walsh ]
   * add grub-efi-ia32 to options for depends
   * add initial new grub2-fll-portable-efi binary package
 
