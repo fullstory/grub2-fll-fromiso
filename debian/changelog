@@ -1,3 +1,9 @@
+grub2-fll-fromiso (0.3.10) unstable; urgency=medium
+
+  * fix d/control syntax for Uploaders.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 01 Sep 2014 22:45:04 +0200
+
 grub2-fll-fromiso (0.3.9) unstable; urgency=medium
 
   * add grub-efi-ia32 to options for depends
