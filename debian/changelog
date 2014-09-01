@@ -1,8 +1,13 @@
 grub2-fll-fromiso (0.3.9) UNRELEASED; urgency=medium
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 30 Jun 2014 04:22:36 +0200
+  [ Niall Walsh ]
+  * add grub-efi-ia32 to options for depends
+  * add initial new grub2-fll-portable-efi binary package
+
+ -- Niall Walsh <niallwalsh@celtux.org>  Mon, 01 Sep 2014 15:15:39 +0100
 
 grub2-fll-fromiso (0.3.8) unstable; urgency=medium
 

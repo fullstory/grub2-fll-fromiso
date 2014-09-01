@@ -1,0 +1,33 @@
+#!/bin/sh
+set -e
+
+FLL_EFI_STANDALONE=""
+FLL_EFI_PORTABLE_PATH="/boot/efi/EFI/BOOT"
+
+# override tool behaviour through /etc/default/grub2-fll-standalone
+if [ -r /etc/default/grub2-fll-portable-efi ]; then
+        . /etc/default/grub2-fll-portable-efi
+fi
+
+patt='[[:space:]]-o[[:space:]]\+/boot/grub/grub.cfg'
+# do nothing if disabled or grub-mkconfig is generating /boot/grub/grub.cfg
+( [ "${FLL_EFI_STANDALONE}" != "disable" ] && \
+  ps x | grep 'grub-mkconfig[[:space:]]' | grep -q -e "${patt}[[:space:]]" -e "${patt}$" ) || exit
+
+beeb="${FLL_EFI_PORTABLE_PATH}"
+if [ -e "${beeb}" ]; then
+  # do not do anything to a beeb we didn't create
+  [ ! -e "${beeb}/fullstory" ] && exit
+else
+  # create beeb and mark it as ours
+  mkdir -p "${beeb}"
+  touch "${beeb}/fullstory"
+fi
+
+for platform in i386-efi x86_64-efi ; do
+  filename="bootx64"
+  [ "${platform}" = "i386-efi" ] && filename="bootia32"
+  [ -e /usr/lib/grub/${platform} ] && grub-mkstandalone \
+    -o ${beeb}/${filename}.efi --compress=xz  -O ${platform} \
+    /boot/grub/grub.cfg=/boot/grub/grub.cfg.new 2>&1 > /dev/null
+done
