@@ -1,6 +1,8 @@
 grub2-fll-fromiso (0.3.11) UNRELEASED; urgency=medium
 
   * NOT RELEASED YET
+  * query file names for kernel/ initrd via RockRidge, before falling
+    back to plain ISO9660.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 01 Sep 2014 22:45:23 +0200
 
