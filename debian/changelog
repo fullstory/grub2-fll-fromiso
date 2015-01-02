@@ -1,3 +1,9 @@
+grub2-fll-fromiso (0.3.12) UNRELEASED; urgency=medium
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 02 Jan 2015 18:45:21 +0100
+
 grub2-fll-fromiso (0.3.11) unstable; urgency=medium
 
   * query file names for kernel/ initrd via RockRidge, before falling
