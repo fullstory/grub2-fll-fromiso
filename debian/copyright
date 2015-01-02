@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: grub2-fll-fromiso
 Upstream-Contact: Stefan Lippers-Hollmann <s.l-h@gmx.de>
-Source: git@github.com:/fullstory/grub2-fll-fromiso.git
+Source: git://github.com/fullstory/grub2-fll-fromiso.git
 
 Files: *
 Copyright: 2009, Joaquim Boura <x-un-i@sapo.pt>
