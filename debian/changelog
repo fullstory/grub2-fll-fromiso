@@ -5,8 +5,9 @@ grub2-fll-fromiso (0.3.11) unstable; urgency=medium
   * convert to machine readable copyright.
   * update mail addresses.
   * bump standards version to 3.9.6, no changes necessary.
+  * add explicit license header to grub2-fll-portable-efi.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 02 Jan 2015 18:41:15 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 02 Jan 2015 18:42:52 +0100
 
 grub2-fll-fromiso (0.3.10) unstable; urgency=medium
 
