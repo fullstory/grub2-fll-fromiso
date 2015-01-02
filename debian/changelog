@@ -3,6 +3,8 @@ grub2-fll-fromiso (0.3.11) UNRELEASED; urgency=medium
   * NOT RELEASED YET
   * query file names for kernel/ initrd via RockRidge, before falling
     back to plain ISO9660.
+  * convert to machine readable copyright.
+  * update mail addresses.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 01 Sep 2014 22:45:23 +0200
 
@@ -87,7 +89,7 @@ grub2-fll-fromiso (0.2.15) unstable; urgency=low
 
   * changed dependencies to include the grub-efi variants.
 
- -- Joaquim Boura <x-un-i@berlios.de>  Sat, 03 Sep 2011 15:46:40 +0200
+ -- Joaquim Boura <x-un-i@sapo.pt>  Sat, 03 Sep 2011 15:46:40 +0200
 
 grub2-fll-fromiso (0.2.14) unstable; urgency=low
 
@@ -95,13 +97,13 @@ grub2-fll-fromiso (0.2.14) unstable; urgency=low
   * numerically sort the isos
   * fix a couple of comment typos
 
- -- Niall Walsh <niallwalsh@users.berlios.de>  Tue, 05 Jul 2011 17:35:10 +0100
+ -- Niall Walsh <niallwalsh@celtux.org>  Tue, 05 Jul 2011 17:35:10 +0100
 
 grub2-fll-fromiso (0.2.13) unstable; urgency=low
 
   * fixed typo when setting timezone cheat. (thks latino for noticing)
 
- -- Joaquim Boura <x-un-i@berlios.de>  Fri, 27 May 2011 19:16:00 +0200
+ -- Joaquim Boura <x-un-i@sapo.pt>  Fri, 27 May 2011 19:16:00 +0200
 
 grub2-fll-fromiso (0.2.12) unstable; urgency=low
 
@@ -168,7 +170,7 @@ grub2-fll-fromiso (0.2.3) unstable; urgency=low
   * adding the module iso9660  makes fromiso also starting when the base HD
     is an USB device.
 
- -- Joaquim Boura <x-un-i@berlios.de>  Sun, 10 Jan 2010 12:13:58 +0100
+ -- Joaquim Boura <x-un-i@sapo.pt>  Sun, 10 Jan 2010 12:13:58 +0100
 
 grub2-fll-fromiso (0.2.2) unstable; urgency=low
 
@@ -229,4 +231,4 @@ grub2-fll-fromiso (0.0.1) unstable; urgency=low
   * remove dev defaults
   * added myself to the copyrights holder
 
- -- Joaquim Boura <x-un-i@berlios.de>  Fri, 27 Nov 2009 23:26:36 +0100
+ -- Joaquim Boura <x-un-i@sapo.pt>  Fri, 27 Nov 2009 23:26:36 +0100
