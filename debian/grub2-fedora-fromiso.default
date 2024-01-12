@@ -1,0 +1,27 @@
+# Defaults for grub2-fll-fromiso update-grub helper
+# sourced by grub2's update-grub
+# installed at /etc/default/grub2-fll-fromiso by the maintainer scripts
+
+#
+# This is a POSIX shell fragment
+#
+
+# specify where to look for the ISO
+# default: /srv/ISO
+FEDORA_GRUB2_ISO_LOCATION="/srv/ISO/"
+
+# array for defining ISO prefices --> aptosid-*.iso, non-recursive
+# default: "aptosid- fullstory-"
+#FEDORA_GRUB2_ISO_PREFIX="Fedora-"
+
+# set default language
+# default: en_US.UTF8
+FEDORA_GRUB2_LANG="de_DE.UTF8"
+
+# override the default timezone.
+# default: UTC
+FEDORA_GRUB2_TZ="Europe/Berlin"
+
+# additional cheatcodes
+# default: quiet noeject
+#FEDORA_GRUB2_CHEATCODE="quiet systemd.show_status=1 noeject hostname=minuteman username=slh utc=yes"
