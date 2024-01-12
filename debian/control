@@ -1,6 +1,6 @@
 Source: grub2-fll-fromiso
 Section: admin
-Priority: extra
+Priority: optional
 Maintainer: Stefan Lippers-Hollmann <s.l-h@gmx.de>
 Rules-Requires-Root: no
 Build-Depends: debhelper-compat (= 13),

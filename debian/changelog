@@ -8,8 +8,11 @@ grub2-fll-fromiso (0.4.0) unstable; urgency=medium
       [debian/control:8]
     - grub2-fll-fromiso source: trailing-whitespace [debian/control:17]
     - grub2-fll-fromiso source: trailing-whitespace [debian/control:28]
+    - grub2-fedora-fromiso: priority-extra-is-replaced-by-priority-optional
+    - grub2-fll-fromiso: priority-extra-is-replaced-by-priority-optional
+    - grub2-fll-portable-efi: priority-extra-is-replaced-by-priority-optional
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 12 Jan 2024 08:47:55 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 12 Jan 2024 08:49:29 +0100
 
 grub2-fll-fromiso (0.3.11) unstable; urgency=medium
 
