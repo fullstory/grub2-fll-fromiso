@@ -1,3 +1,9 @@
+grub2-fll-fromiso (0.4.1) UNRELEASED; urgency=medium
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 12 Jan 2024 08:53:49 +0100
+
 grub2-fll-fromiso (0.4.0) unstable; urgency=medium
 
   * bump standards version to 4.6.2, no changes necessary.
