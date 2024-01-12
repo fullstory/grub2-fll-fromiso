@@ -1,3 +1,9 @@
+grub2-fll-fromiso (0.4.3) UNRELEASED; urgency=medium
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 12 Jan 2024 10:08:10 +0100
+
 grub2-fll-fromiso (0.4.2) unstable; urgency=medium
 
   * fedora: correctly extract the kernel version.
