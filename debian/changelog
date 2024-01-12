@@ -3,8 +3,13 @@ grub2-fll-fromiso (0.4.0) unstable; urgency=medium
   * bump standards version to 4.6.2, no changes necessary.
   * switch to compat level 13.
   * allow R³=no.
+  * fix lintian problems:
+    - grub2-fll-fromiso source: cute-field Vcs-git vs Vcs-Git
+      [debian/control:8]
+    - grub2-fll-fromiso source: trailing-whitespace [debian/control:17]
+    - grub2-fll-fromiso source: trailing-whitespace [debian/control:28]
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 12 Jan 2024 08:44:59 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 12 Jan 2024 08:47:55 +0100
 
 grub2-fll-fromiso (0.3.11) unstable; urgency=medium
 
