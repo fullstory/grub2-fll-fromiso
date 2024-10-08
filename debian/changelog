@@ -1,8 +1,19 @@
-grub2-fll-fromiso (0.4.4) UNRELEASED; urgency=medium
+grub2-fll-fromiso (0.4.4) unstable; urgency=medium
 
-  * NOT RELEASED YET
+  * revert previously applied "rmmod tpm" workaround for loopback mounting
+    on systems with grub-efi-*-signed installed, as it breaks 'normal'
+    systems that were previously working. 
+    The obvious workaround for systems that fall over tpm would be adding
+    a "/etc/grub.d/02_notpm" shell script, outputting "rmmod tpm" to stdout.
+    Purging grub-efi-*-signed might work as well, at the obvious expense of
+    breaking secure boot signature validation (but a global rmmod tpm does
+    that as well).
+    Hopefully a more surgical workaround, depending on the status of tpm
+    being loaded or not (or grub-efi-*-signed being installed) can be found
+    as a long term solution; ideally grub2 would get its out of memory bug
+    fixed though.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 02 Oct 2024 13:13:08 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 08 Oct 2024 02:27:18 +0200
 
 grub2-fll-fromiso (0.4.3) unstable; urgency=medium
 
