@@ -96,7 +96,6 @@ for iso_image in $FROMISO; do
 		printf '%s\n' "${prepare_boot_cache}"
 
 		cat << EOF
-	rmmod tpm
 	loopback loop ${stripped_path}
 	linux (loop)/boot/${kernel} fromhd=${cur_fromhd} fromiso=${stripped_path} $CMDLINE
 	initrd (loop)/boot/initrd${initrd_suffix}${kernel#vmlinuz}
