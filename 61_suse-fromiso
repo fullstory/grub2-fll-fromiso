@@ -55,7 +55,7 @@ if [ -z "${FROMISO}" ]; then
 fi
 
 # assemble cmdline
-CMDLINE="rd.locale.LANG=${SUSE_GRUB2_LANG} ${SUSE_GRUB2_CHEATCODE} "
+CMDLINE="lang=${SUSE_GRUB2_LANG} ${SUSE_GRUB2_CHEATCODE} "
 
 # create a temp device.map as the actual can be not uptodate
 DEVICE_MAP_TMP=$(mktemp)
