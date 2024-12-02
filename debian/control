@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Stefan Lippers-Hollmann <s.l-h@gmx.de>
 Rules-Requires-Root: no
 Build-Depends: debhelper-compat (= 13),
-Standards-Version: 4.6.2
+Standards-Version: 4.7.0
 Vcs-Git: https://github.com/fullstory/grub2-fll-fromiso.git
 Vcs-Browser: https://github.com/fullstory/grub2-fll-fromiso
 

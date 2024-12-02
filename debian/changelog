@@ -3,14 +3,15 @@ grub2-fll-fromiso (0.5.0) unstable; urgency=medium
   * add very initial support for openSUSE live ISOs, tested with Leap and
     Tumbleweed based KDE images. Localization (language, keymaps, timezone
     preselection still needs work).
+  * bump standards version to 4.7.0, no changes necessary.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 02 Dec 2024 01:00:12 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 02 Dec 2024 01:04:45 +0100
 
 grub2-fll-fromiso (0.4.4) unstable; urgency=medium
 
   * revert previously applied "rmmod tpm" workaround for loopback mounting
     on systems with grub-efi-*-signed installed, as it breaks 'normal'
-    systems that were previously working. 
+    systems that were previously working.
     The obvious workaround for systems that fall over tpm would be adding
     a "/etc/grub.d/02_notpm" shell script, outputting "rmmod tpm" to stdout.
     Purging grub-efi-*-signed might work as well, at the obvious expense of
