@@ -1,8 +1,9 @@
-grub2-fll-fromiso (0.5.4) UNRELEASED; urgency=medium
+grub2-fll-fromiso (0.5.4) unstable; urgency=medium
 
-  * NOT RELEASED YET
+  * grub2-fedora-fromiso: update to support the changed kernel/ initrd paths of
+    post-v41 rawhide based ISOs.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 02 Dec 2024 02:52:44 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 02 Dec 2024 10:39:11 +0100
 
 grub2-fll-fromiso (0.5.3) unstable; urgency=medium
 

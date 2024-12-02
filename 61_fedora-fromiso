@@ -104,6 +104,23 @@ for iso_image in $FROMISO; do
 EOF
 	echo "Found fromiso: $(basename ${iso_image}) on ${cur_device}" >&2
 	done
+
+	kernels="$( ( ${ISOINFO} -J -f -i ${iso_image} 2>/dev/null || ${ISOINFO} -R -f -i ${iso_image} 2>/dev/null || ${ISOINFO} -f -i ${iso_image} ) | sed -n -e 's|\;[0-9]*$||' -e 'y|ABCDEFGHIJKLMNOPQRSTUVWXYZ|abcdefghijklmnopqrstuvwxyz|' -e 's|/boot/\([a-z0-9_-]*\)/loader/linux|\1|p')"
+
+	for kernel_arch in ${kernels}; do
+		printf "menuentry \"$(basename ${iso_image} .iso) ($(${ISOINFO} -R -i ${iso_image} 2>/dev/null -x /boot/${kernel_arch}/loader/linux | file -b - | sed 's/.*version //;s/ .*//'))\" {\n"
+		printf "\tinsmod iso9660\n"
+		prepare_boot_cache="$(prepare_grub_to_access_device ${cur_device} | sed -e "s/^/\t/")"
+		printf '%s\n' "${prepare_boot_cache}"
+
+		cat << EOF
+	loopback loop ${stripped_path}
+	linux (loop)/boot/${kernel_arch}/loader/linux iso-scan/filename=${stripped_path} root=live:CDLABEL=${cdlabel} rd.live.image $CMDLINE
+	initrd (loop)/boot/${kernel_arch}/loader/initrd
+}
+EOF
+	echo "Found fromiso: $(basename ${iso_image}) on ${cur_device}" >&2
+	done
 done
 
 rm -f "${DEVICE_MAP_TMP}"
