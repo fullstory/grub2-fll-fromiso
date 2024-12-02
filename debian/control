@@ -8,6 +8,21 @@ Standards-Version: 4.7.0
 Vcs-Git: https://github.com/fullstory/grub2-fll-fromiso.git
 Vcs-Browser: https://github.com/fullstory/grub2-fll-fromiso
 
+Package: grub2-all-fromiso
+Architecture: all
+Depends: ${misc:Depends},
+ grub2-fll-fromiso,
+ grub2-fedora-fromiso,
+ grub2-suse-fromiso
+Description: update-grub (grub2) metapackage for all supported fromiso helpers
+ Automatically adds and updates fromiso snippets for grub.cfg of the
+ GRand Unified Bootloader, version 2.
+ .
+ Supported live ISOs:
+ - aptosid/ fullstory
+ - Fedora
+ - OpenSUSE (Leap, Tumbleweed)
+
 Package: grub2-fll-fromiso
 Architecture: all
 Depends: ${misc:Depends},
