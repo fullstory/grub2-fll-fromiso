@@ -1,8 +1,10 @@
-grub2-fll-fromiso (0.4.5) UNRELEASED; urgency=medium
+grub2-fll-fromiso (0.5.0) unstable; urgency=medium
 
-  * NOT RELEASED YET
+  * add very initial support for openSUSE live ISOs, tested with Leap and
+    Tumbleweed based KDE images. Localization (language, keymaps, timezone
+    preselection still needs work).
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 08 Oct 2024 02:34:06 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 02 Dec 2024 01:00:12 +0100
 
 grub2-fll-fromiso (0.4.4) unstable; urgency=medium
 
