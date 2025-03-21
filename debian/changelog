@@ -1,7 +1,4 @@
-grub2-fll-fromiso (0.5.5) UNRELEASED; urgency=medium
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+grub2-fll-fromiso (0.5.5) unstable; urgency=medium
 
   [ Kel Modderman ]
   * Consider that a device may be mounted to multiple mountpoints (e.g.
@@ -10,7 +7,7 @@ grub2-fll-fromiso (0.5.5) UNRELEASED; urgency=medium
     explicitly take btrfs subvolumes into account by parsing mount
     options.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 02 Dec 2024 10:40:20 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 22 Mar 2025 00:05:12 +0100
 
 grub2-fll-fromiso (0.5.4) unstable; urgency=medium
 
