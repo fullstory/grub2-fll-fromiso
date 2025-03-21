@@ -76,12 +76,19 @@ for iso_image in $FROMISO; do
 		fi
 	fi
 
-	mountpoint="$(awk -v var="$cur_device" '{if ($1 == var){print $2 ; exit}}' /proc/mounts)"
-	stripped_path="${iso_image##$mountpoint}"
+	mountpoints="$(awk -v device="$cur_device" '{if ($1 == device){print $2}}' /proc/mounts)"
+	stripped_path="${iso_image}"
 
-
-	if [ "${mountpoint}" = "/"  ]; then
-		stripped_path="/${stripped_path}"
+	if [ -n "$mountpoints" ]; then
+		for mountpoint in $mountpoints; do
+			[ "$mountpoint" = "/" ] && continue
+			case $iso_image in
+				$mountpoint/*)
+					stripped_path="${iso_image##$mountpoint}"
+					break
+					;;
+			esac
+		done
 	fi
 
 	cdlabel="$( ${ISOINFO} -d -i ${iso_image} 2>/dev/null | awk '/^Volume id:/{print $3}' )"
