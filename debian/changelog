@@ -1,6 +1,14 @@
 grub2-fll-fromiso (0.5.5) UNRELEASED; urgency=medium
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
+
+  [ Kel Modderman ]
+  * Consider that a device may be mounted to multiple mountpoints (e.g.
+    btrfs subvolumes) and so process greater than one matching line in
+    /proc/mounts that our target device may be associated with. Also
+    explicitly take btrfs subvolumes into account by parsing mount
+    options.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 02 Dec 2024 10:40:20 +0100
 

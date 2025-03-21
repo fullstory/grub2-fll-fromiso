@@ -76,13 +76,19 @@ for iso_image in $FROMISO; do
 		fi
 	fi
 
-	mountpoint="$(awk -v var="$cur_device" '{if ($1 == var){print $2 ; exit}}' /proc/mounts)"
-	stripped_path="${iso_image##$mountpoint}"
-
-
-	if [ "${mountpoint}" = "/"  ]; then
-		stripped_path="/${stripped_path}"
-	fi
+	mountpoint=""
+	subvolume=""
+	while IFS=' ' read dev mount fs opts dump pass; do
+		[ "$mount" = "/" ] && continue
+		case $iso_image in
+			$mount*)
+			[ "$fs" = "btrfs" ] && subvolume=$(echo "$opts" | sed -n 's/.*subvol=\([^,]*\).*/\1/p')
+			mountpoint="$mount"
+			break
+			;;
+		esac
+	done < /proc/mounts
+	stripped_path="${subvolume}${iso_image##$mountpoint}"
 
 	cdlabel="$( ${ISOINFO} -d -i ${iso_image} 2>/dev/null | awk '/^Volume id:/{print $3}' )"
 	kernels="$( ( ${ISOINFO} -J -f -i ${iso_image} 2>/dev/null || ${ISOINFO} -R -f -i ${iso_image} 2>/dev/null || ${ISOINFO} -f -i ${iso_image} ) | sed -n -e 's|\;[0-9]*$||' -e 'y|ABCDEFGHIJKLMNOPQRSTUVWXYZ|abcdefghijklmnopqrstuvwxyz|' -e 's|/boot/\([a-z0-9_-]*\)/loader/linux|\1|p')"
