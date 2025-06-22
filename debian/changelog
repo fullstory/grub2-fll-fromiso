@@ -1,12 +1,9 @@
-grub2-fll-fromiso (0.5.6) UNRELEASED; urgency=medium
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+grub2-fll-fromiso (0.5.6) unstable; urgency=medium
 
   [ Kel Modderman ]
   * Set fsck.mode=skip per default boot cmdline option for fll.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 22 Mar 2025 00:05:31 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 22 Jun 2025 07:13:39 +0200
 
 grub2-fll-fromiso (0.5.5) unstable; urgency=medium
 
