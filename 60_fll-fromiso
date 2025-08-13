@@ -63,6 +63,7 @@ grub-mkdevicemap -m "${DEVICE_MAP_TMP}"
 
 for iso_image in $FROMISO; do
 	cur_device="$(grub-probe --device-map=${DEVICE_MAP_TMP} --target=device ${iso_image})"
+	boot_cache="$(prepare_grub_to_access_device ${cur_device} | sed -e "s/^/\t/")"
 	if [ "$(grub-probe -t abstraction --device ${cur_device} | sed -e 's,.*\(lvm\).*,\1,')" = "lvm" ]; then
 		cur_fromhd="${cur_device}"
 	else
@@ -98,8 +99,7 @@ for iso_image in $FROMISO; do
 	for kernel in ${kernels}; do
 		printf "menuentry \"$(basename ${iso_image} .iso) (${kernel#vmlinuz\-})\" {\n"
 		printf "\tinsmod iso9660\n"
-		prepare_boot_cache="$(prepare_grub_to_access_device ${cur_device} | sed -e "s/^/\t/")"
-		printf '%s\n' "${prepare_boot_cache}"
+		printf '%s\n' "${boot_cache}"
 
 		cat << EOF
 	loopback loop ${stripped_path}

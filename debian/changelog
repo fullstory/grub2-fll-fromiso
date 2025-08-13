@@ -1,6 +1,10 @@
 grub2-fll-fromiso (0.5.7) UNRELEASED; urgency=medium
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
+
+  [ Kel Modderman ]
+  * Execute prepare_grub_to_access_device only once per iso image.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 22 Jun 2025 07:13:57 +0200
 
