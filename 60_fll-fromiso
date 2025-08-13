@@ -30,9 +30,10 @@ fi
 
 FLL_GRUB2_ISO_LOCATION="${FLL_GRUB2_ISO_LOCATION:-"/srv/ISO"}"
 FLL_GRUB2_ISO_PREFIX="${FLL_GRUB2_ISO_PREFIX:-"aptosid fullstory"}"
-FLL_GRUB2_LANG="${FLL_GRUB2_LANG:-"en_EN"}"
-FLL_GRUB2_TZ="${FLL_GRUB2_TZ:-"UTC"}"
-FLL_GRUB2_CHEATCODE="${FLL_GRUB2_CHEATCODE:-"quiet fsck.mode=skip systemd.show_status=1 noeject"}"
+FLL_GRUB2_LANG="${FLL_GRUB2_LANG:-""}"
+FLL_GRUB2_TZ="${FLL_GRUB2_TZ:-""}"
+FLL_GRUB2_CHEATCODE="${FLL_GRUB2_CHEATCODE:-""}"
+FLL_GRUB2_SUBMENU="${FLL_GRUB2_SUBMENU:-"false"}"
 
 # we need isoinfo, bail out if it's not available
 ISOINFO="$(which isoinfo)"
@@ -91,24 +92,48 @@ for iso_image in $FROMISO; do
 	done < /proc/mounts
 	stripped_path="${subvolume}${iso_image##$mountpoint}"
 
-	kernels="$( ( ${ISOINFO} -J -f -i ${iso_image} 2>/dev/null || ${ISOINFO} -R -f -i ${iso_image} 2>/dev/null || ${ISOINFO} -f -i ${iso_image} ) | sed -n -e 's|\;[0-9]*$||' -e 'y|ABCDEFGHIJKLMNOPQRSTUVWXYZ|abcdefghijklmnopqrstuvwxyz|' -e 's|/boot/\(vmlinuz.*\)|\1|p')"
-	if ( ${ISOINFO} -J -l -i ${iso_image} 2> /dev/null || ${ISOINFO} -R -l -i ${iso_image} 2>/dev/null || ${ISOINFO} -l -i ${iso_image}) | tr A-Z a-z | grep -q initrd\\.img; then
-		initrd_suffix=".img"
+	echo "Found fromiso: $(basename ${iso_image}) on ${cur_device}: ${stripped_path}" >&2
+
+	if ! ${ISOINFO} -R -i ${iso_image} -f 2>/dev/null | grep -q /boot/grub/kernels.cfg; then
+		echo "Warning fromiso: /boot/grub/kernels.cfg not found on $(basename ${iso_image})" >&2
+		continue
 	fi
 
-	for kernel in ${kernels}; do
-		printf "menuentry \"$(basename ${iso_image} .iso) (${kernel#vmlinuz\-})\" {\n"
-		printf "\tinsmod iso9660\n"
-		printf '%s\n' "${boot_cache}"
-
-		cat << EOF
-	loopback loop ${stripped_path}
-	linux (loop)/boot/${kernel} fromhd=${cur_fromhd} fromiso=${stripped_path} $CMDLINE
-	initrd (loop)/boot/initrd${initrd_suffix}${kernel#vmlinuz}
-}
-EOF
-	echo "Found fromiso: $(basename ${iso_image}) on ${cur_device}" >&2
-	done
+	${ISOINFO} -R -i ${iso_image} -x /boot/grub/kernels.cfg 2>/dev/null | \
+		awk -v fromhd="${cur_fromhd}" -v fromiso="${stripped_path}" \
+			-v iso_image="$(basename ${iso_image})" -v boot_cache="${boot_cache}" \
+			-v cmdline="${CMDLINE}" -v submenu="${FLL_GRUB2_SUBMENU}" \
+		'BEGIN {
+			if (submenu == "true")
+				printf "submenu \"%s\" {\n", iso_image
+		}
+		{
+			sub(/^[ \t]+/, "", $0)
+			sub(/\/boot/, "(loop)/boot", $0)
+			sub(/[ ]+\$kopts$/, "", $0)
+			if (/menuentry/ && !/find.none/) {
+				sub(/"/, "\"" iso_image " ", $0)
+				printf "%s\n", $0
+				printf "\tinsmod iso9660\n"
+				printf "%s\n", boot_cache
+				printf "\tloopback loop %s\n", fromiso
+			}
+			if (/\(loop\)\/boot\/vmlinuz/) {
+				n = split(cmdline, cheatcode, " ")
+				for (i = 1; i<= n; i++)
+					sub(cheatcode[i], "", $0)
+				gsub(/[ ]+/, " ", $0)
+				printf "\t%s fromhd=%s fromiso=%s %s\n",
+					$0, fromhd, fromiso, cmdline
+			}
+			if (/\(loop\)\/boot\/initrd.img/) {
+				printf "\t%s\n}\n", $0
+			}
+		}
+		END {
+			if (submenu == "true")
+				printf "}\n"
+		}'
 done
 
 rm -f "${DEVICE_MAP_TMP}"

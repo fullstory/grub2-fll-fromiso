@@ -25,3 +25,7 @@
 # additional cheatcodes
 # default: quiet fsck.mode=skip systemd.show_status=1 noeject
 #FLL_GRUB2_CHEATCODE="quiet fsck.mode=skip systemd.show_status=1 noeject"
+
+# create a submenu for each iso
+# default: false
+#FLL_GRUB2_SUBMENU="true"
