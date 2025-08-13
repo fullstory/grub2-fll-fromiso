@@ -13,6 +13,8 @@ grub2-fll-fromiso (0.5.7) UNRELEASED; urgency=medium
   * Add FLL_GRUB2_SUBMENU option.
   * Sanitise the boot cmdline when merging the existing menuentry from fll
     iso with whatever user has configured in /etc/default/grub2-fll-fromiso.
+  * Fix: grub2-all-fromiso: possible-unindented-list-in-extended-
+    description .
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 22 Jun 2025 07:13:57 +0200
 

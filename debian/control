@@ -19,9 +19,9 @@ Description: update-grub (grub2) metapackage for all supported fromiso helpers
  GRand Unified Bootloader, version 2.
  .
  Supported live ISOs:
- - aptosid/ fullstory
- - Fedora
- - OpenSUSE (Leap, Tumbleweed)
+   - aptosid/ fullstory
+   - Fedora
+   - OpenSUSE (Leap, Tumbleweed)
 
 Package: grub2-fll-fromiso
 Architecture: all
