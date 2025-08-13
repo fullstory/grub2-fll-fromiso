@@ -104,8 +104,7 @@ for iso_image in $FROMISO; do
 			-v iso_image="$(basename ${iso_image})" -v boot_cache="${boot_cache}" \
 			-v cmdline="${CMDLINE}" -v submenu="${FLL_GRUB2_SUBMENU}" \
 		'BEGIN {
-			if (submenu == "true")
-				printf "submenu \"%s\" {\n", iso_image
+			lines = 0
 		}
 		{
 			sub(/^[ \t]+/, "", $0)
@@ -113,24 +112,33 @@ for iso_image in $FROMISO; do
 			sub(/[ ]+\$kopts$/, "", $0)
 			if (/menuentry/ && !/find.none/) {
 				sub(/"/, "\"" iso_image " ", $0)
-				printf "%s\n", $0
-				printf "\tinsmod iso9660\n"
-				printf "%s\n", boot_cache
-				printf "\tloopback loop %s\n", fromiso
+				kernels[++lines] = sprintf("%s\n", $0)
+				kernels[++lines] = sprintf("\tinsmod iso9660\n")
+				kernels[++lines] = sprintf("%s\n", boot_cache)
+				kernels[++lines] = sprintf("\tloopback loop %s\n", fromiso)
 			}
 			if (/\(loop\)\/boot\/vmlinuz/) {
 				n = split(cmdline, cheatcode, " ")
-				for (i = 1; i<= n; i++)
+				for (i = 1; i <= n; i++) {
+					if (cheatcode[i] ~ /=$/)
+						sub(cheatcode[i], "", cmdline)
 					sub(cheatcode[i], "", $0)
+				}
 				gsub(/[ ]+/, " ", $0)
-				printf "\t%s fromhd=%s fromiso=%s %s\n",
-					$0, fromhd, fromiso, cmdline
+				kernels[++lines] = sprintf("\t%s fromhd=%s fromiso=%s %s\n",
+					$0, fromhd, fromiso, cmdline)
 			}
 			if (/\(loop\)\/boot\/initrd.img/) {
-				printf "\t%s\n}\n", $0
+				kernels[++lines] = sprintf("\t%s\n}\n", $0)
 			}
 		}
 		END {
+			if (lines == 0)
+				exit(0)
+			if (submenu == "true")
+				printf "submenu \"%s\" {\n", iso_image
+			for (line = 1; line <= lines; line++)
+				printf kernels[line]
 			if (submenu == "true")
 				printf "}\n"
 		}'

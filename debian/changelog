@@ -11,6 +11,8 @@ grub2-fll-fromiso (0.5.7) UNRELEASED; urgency=medium
   * Pass through menuentries from iso image rather than recreating them
     using FLL_GRUB2_LANG, FLL_GRUB2_TZ, and FLL_GRUB2_CHEATCODE values.
   * Add FLL_GRUB2_SUBMENU option.
+  * Sanitise the boot cmdline when merging the existing menuentry from fll
+    iso with whatever user has configured in /etc/default/grub2-fll-fromiso.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 22 Jun 2025 07:13:57 +0200
 
