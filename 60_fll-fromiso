@@ -94,55 +94,75 @@ for iso_image in $FROMISO; do
 
 	echo "Found fromiso: $(basename ${iso_image}) on ${cur_device}: ${stripped_path}" >&2
 
-	if ! ${ISOINFO} -R -i ${iso_image} -f 2>/dev/null | grep -q /boot/grub/kernels.cfg; then
-		echo "Warning fromiso: /boot/grub/kernels.cfg not found on $(basename ${iso_image})" >&2
-		continue
-	fi
-
-	${ISOINFO} -R -i ${iso_image} -x /boot/grub/kernels.cfg 2>/dev/null | \
-		awk -v fromhd="${cur_fromhd}" -v fromiso="${stripped_path}" \
-			-v iso_image="$(basename ${iso_image})" -v boot_cache="${boot_cache}" \
-			-v cmdline="${CMDLINE}" -v submenu="${FLL_GRUB2_SUBMENU}" \
-		'BEGIN {
-			lines = 0
-		}
-		{
-			sub(/^[ \t]+/, "", $0)
-			sub(/\/boot/, "(loop)/boot", $0)
-			sub(/[ ]+\$kopts$/, "", $0)
-			if (/menuentry/ && !/find.none/) {
-				sub(/"/, "\"" iso_image " ", $0)
-				kernels[++lines] = sprintf("%s\n", $0)
-				kernels[++lines] = sprintf("\tinsmod iso9660\n")
-				kernels[++lines] = sprintf("%s\n", boot_cache)
-				kernels[++lines] = sprintf("\tloopback loop %s\n", fromiso)
+	if ${ISOINFO} -R -i ${iso_image} -f 2>/dev/null | grep -q /boot/grub/kernels.cfg; then
+		${ISOINFO} -R -i ${iso_image} -x /boot/grub/kernels.cfg 2>/dev/null | \
+			awk -v fromhd="${cur_fromhd}" -v fromiso="${stripped_path}" \
+				-v iso_image="$(basename ${iso_image})" -v boot_cache="${boot_cache}" \
+				-v cmdline="${CMDLINE}" -v submenu="${FLL_GRUB2_SUBMENU}" \
+			'BEGIN {
+				lines = 0
 			}
-			if (/\(loop\)\/boot\/vmlinuz/) {
-				n = split(cmdline, cheatcode, " ")
-				for (i = 1; i <= n; i++) {
-					if (cheatcode[i] ~ /=$/)
-						sub(cheatcode[i], "", cmdline)
-					else
-						sub(cheatcode[i], "", $0)
+			{
+				sub(/^[ \t]+/, "", $0)
+				sub(/\/boot/, "(loop)/boot", $0)
+				sub(/[ ]+\$kopts$/, "", $0)
+				if (/menuentry/ && !/find.none/) {
+					sub(/"/, "\"" iso_image " ", $0)
+					kernels[++lines] = sprintf("%s\n", $0)
+					kernels[++lines] = sprintf("\tinsmod iso9660\n")
+					kernels[++lines] = sprintf("%s\n", boot_cache)
+					kernels[++lines] = sprintf("\tloopback loop %s\n", fromiso)
 				}
-				gsub(/[ ]+/, " ", $0)
-				kernels[++lines] = sprintf("\t%s fromhd=%s fromiso=%s %s\n",
-					$0, fromhd, fromiso, cmdline)
+				if (/\(loop\)\/boot\/vmlinuz/) {
+					n = split(cmdline, cheatcode, " ")
+					for (i = 1; i <= n; i++) {
+						if (cheatcode[i] ~ /=$/)
+							sub(cheatcode[i], "", cmdline)
+						else
+							sub(cheatcode[i], "", $0)
+					}
+					gsub(/[ ]+/, " ", $0)
+					kernels[++lines] = sprintf("\t%s fromhd=%s fromiso=%s %s\n",
+						$0, fromhd, fromiso, cmdline)
+				}
+				if (/\(loop\)\/boot\/initrd.img/) {
+					kernels[++lines] = sprintf("\t%s\n}\n", $0)
+				}
 			}
-			if (/\(loop\)\/boot\/initrd.img/) {
-				kernels[++lines] = sprintf("\t%s\n}\n", $0)
-			}
-		}
-		END {
-			if (lines == 0)
-				exit(0)
-			if (submenu == "true")
-				printf "submenu \"%s\" {\n", iso_image
-			for (line = 1; line <= lines; line++)
-				printf kernels[line]
-			if (submenu == "true")
-				printf "}\n"
-		}'
+			END {
+				if (lines == 0)
+					exit(0)
+				if (submenu == "true")
+					printf "submenu \"%s\" {\n", iso_image
+				for (line = 1; line <= lines; line++)
+					printf kernels[line]
+				if (submenu == "true")
+					printf "}\n"
+			}'
+	else
+		kernels="$( ( ${ISOINFO} -J -f -i ${iso_image} 2>/dev/null || \
+			${ISOINFO} -R -f -i ${iso_image} 2>/dev/null || ${ISOINFO} -f -i ${iso_image} ) | \
+			sed -n -e 's|\;[0-9]*$||' -e 'y|ABCDEFGHIJKLMNOPQRSTUVWXYZ|abcdefghijklmnopqrstuvwxyz|' \
+			-e 's|/boot/\(vmlinuz.*\)|\1|p')"
+		if ( ${ISOINFO} -J -l -i ${iso_image} 2> /dev/null || \
+			${ISOINFO} -R -l -i ${iso_image} 2>/dev/null || ${ISOINFO} -l -i ${iso_image}) | \
+			tr A-Z a-z | grep -q initrd\\.img; then
+			initrd_suffix=".img"
+		fi
+
+		for kernel in ${kernels}; do
+			printf "menuentry \"$(basename ${iso_image} .iso) (${kernel#vmlinuz\-})\" {\n"
+			printf "\tinsmod iso9660\n"
+			printf '%s\n' "${boot_cache}"
+
+			cat << EOF
+	loopback loop ${stripped_path}
+	linux (loop)/boot/${kernel} fromhd=${cur_fromhd} fromiso=${stripped_path} $CMDLINE
+	initrd (loop)/boot/initrd${initrd_suffix}${kernel#vmlinuz}
+}
+EOF
+		done
+	fi
 done
 
 rm -f "${DEVICE_MAP_TMP}"
