@@ -1,3 +1,9 @@
+grub2-fll-fromiso (0.5.8) UNRELEASED; urgency=medium
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 15 Aug 2025 01:00:08 +0200
+
 grub2-fll-fromiso (0.5.7) unstable; urgency=medium
 
   [ Kel Modderman ]
