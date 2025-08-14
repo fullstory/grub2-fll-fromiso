@@ -149,7 +149,9 @@ for iso_image in $FROMISO; do
 			tr A-Z a-z | grep -q initrd\\.img; then
 			initrd_suffix=".img"
 		fi
-
+		if [ -n "${kernels}" ] && [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
+			printf "submenu \"$(basename ${iso_image} .iso)\" {\n"
+		fi
 		for kernel in ${kernels}; do
 			printf "menuentry \"$(basename ${iso_image} .iso) (${kernel#vmlinuz\-})\" {\n"
 			printf "\tinsmod iso9660\n"
@@ -162,6 +164,7 @@ for iso_image in $FROMISO; do
 }
 EOF
 		done
+		[ -n "${kernels}" ] && [ "${FLL_GRUB2_SUBMENU}" = "true" ] && printf "}\n"
 	fi
 done
 

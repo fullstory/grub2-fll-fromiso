@@ -16,6 +16,7 @@ grub2-fll-fromiso (0.5.7) UNRELEASED; urgency=medium
   * Fix: grub2-all-fromiso: possible-unindented-list-in-extended-
     description .
   * Return legacy kernel detection as a fallback options.
+  * Add submenu support to the legacy kernel detection pathway.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 22 Jun 2025 07:13:57 +0200
 
