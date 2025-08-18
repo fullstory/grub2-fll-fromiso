@@ -122,6 +122,7 @@ for iso_image in $FROMISO; do
 							sub(cheatcode[i], "", $0)
 					}
 					gsub(/[ ]+/, " ", $0)
+					gsub(/[ ]+$/, "", cmdline)
 					kernels[++lines] = sprintf("\t%s fromhd=%s fromiso=%s %s\n",
 						$0, fromhd, fromiso, cmdline)
 				}
