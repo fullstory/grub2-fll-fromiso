@@ -1,12 +1,9 @@
-grub2-fll-fromiso (0.5.8) UNRELEASED; urgency=medium
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+grub2-fll-fromiso (0.5.8) unstable; urgency=medium
 
   [ Kel Modderman ]
   * Trim whitepsace from end of cmdline.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 15 Aug 2025 01:00:08 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 18 Aug 2025 15:49:43 +0200
 
 grub2-fll-fromiso (0.5.7) unstable; urgency=medium
 
