@@ -43,11 +43,10 @@ fi
 
 # find ISO
 for location in $FLL_GRUB2_ISO_LOCATION; do
-	if [ -d "${location}" ]; then
-		for prefix in $FLL_GRUB2_ISO_PREFIX; do
-			FROMISO="${FROMISO} $(find ${location} -maxdepth 1 -name ${prefix}\*.iso | sort -n)"
-		done
-	fi
+	[ -d "${location}" ] || continue
+	for prefix in $FLL_GRUB2_ISO_PREFIX; do
+		FROMISO="${FROMISO} $(find ${location} -maxdepth 1 -name ${prefix}\*.iso -exec stat --format='%w %n' {} + | sort -rn | cut -d' ' -f4)"
+	done
 done
 
 # no iso found, quit

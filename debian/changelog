@@ -1,6 +1,11 @@
 grub2-fll-fromiso (0.5.9) UNRELEASED; urgency=medium
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
+
+  [ Kel Modderman ]
+  * 60_fll-fromiso: reverse find output and process iso files from
+    newest to oldest.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 18 Aug 2025 15:50:05 +0200
 
