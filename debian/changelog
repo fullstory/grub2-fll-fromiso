@@ -1,12 +1,9 @@
-grub2-fll-fromiso (0.5.10) UNRELEASED; urgency=medium
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+grub2-fll-fromiso (0.5.10) unstable; urgency=medium
 
   [ Kel Modderman ]
   * Do not set boot=fll explicitly, rather inherit the boot param from iso.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 23 Sep 2025 13:23:37 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 16 Dec 2025 22:17:58 +0100
 
 grub2-fll-fromiso (0.5.9) unstable; urgency=medium
 
