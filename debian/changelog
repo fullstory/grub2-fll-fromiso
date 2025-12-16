@@ -1,6 +1,11 @@
 grub2-fll-fromiso (0.5.11) UNRELEASED; urgency=medium
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
+
+  [ Kel Modderman ]
+  * The persist_uuid cheatcode is incompatible by design with fromiso, make
+    sure it is removed from the fromiso boot params.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 16 Dec 2025 22:18:14 +0100
 
