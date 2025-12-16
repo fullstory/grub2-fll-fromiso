@@ -55,7 +55,7 @@ if [ -z "${FROMISO}" ]; then
 fi
 
 # assemble cmdline
-CMDLINE="systemd.gpt_auto=0 boot=fll lang=${FLL_GRUB2_LANG} tz=${FLL_GRUB2_TZ} ${FLL_GRUB2_CHEATCODE} "
+CMDLINE="lang=${FLL_GRUB2_LANG} tz=${FLL_GRUB2_TZ} ${FLL_GRUB2_CHEATCODE} "
 
 # create a temp device.map as the actual can be not uptodate
 DEVICE_MAP_TMP=$(mktemp)
