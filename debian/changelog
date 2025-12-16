@@ -1,6 +1,11 @@
 grub2-fll-fromiso (0.5.10) UNRELEASED; urgency=medium
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
+
+  [ Kel Modderman ]
+  * Set systemd.gpt_auto=0 to disable attempt at automagic rootsfs
+    mounting by special GPT GUIDs.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 23 Sep 2025 13:23:37 +0200
 
