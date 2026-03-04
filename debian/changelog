@@ -1,6 +1,10 @@
 grub2-fll-fromiso (0.5.12) UNRELEASED; urgency=medium
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
+
+  [ Kel Modderman ]
+  * Support booting iso from luks encrypted partition.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 17 Dec 2025 05:03:59 +0100
 

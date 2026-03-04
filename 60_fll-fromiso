@@ -77,6 +77,12 @@ for iso_image in $FROMISO; do
 		fi
 	fi
 
+	case "${cur_device}" in
+		/dev/mapper/luks-*)
+			CMDLINE="${CMDLINE} $(echo ${cur_device} | sed 's#/dev/mapper/luks-#rd.luks.uuid=#')"
+			;;
+	esac
+
 	mountpoint=""
 	subvolume=""
 	while IFS=' ' read dev mount fs opts dump pass; do
