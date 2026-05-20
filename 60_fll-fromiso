@@ -112,7 +112,10 @@ for iso_image in $FROMISO; do
 				sub(/\/boot/, "(loop)/boot", $0)
 				sub(/[ ]+\$kopts$/, "", $0)
 				if (/menuentry/ && !/find.none/) {
-					sub(/"/, "\"" iso_image " ", $0)
+					if (submenu == "true")
+						sub(/"/, "\"", $0)
+					else
+						sub(/"/, "\"" iso_image " ", $0)
 					kernels[++lines] = sprintf("%s\n", $0)
 					kernels[++lines] = sprintf("\tinsmod iso9660\n")
 					kernels[++lines] = sprintf("%s\n", boot_cache)
