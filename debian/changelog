@@ -1,12 +1,9 @@
-grub2-fll-fromiso (0.5.13) UNRELEASED; urgency=medium
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+grub2-fll-fromiso (0.5.13) unstable; urgency=medium
 
   [ Kel Modderman ]
   * fll-fromiso: remove iso name from submenu menuentry items
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 05 Mar 2026 03:59:49 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 20 May 2026 13:47:22 +0200
 
 grub2-fll-fromiso (0.5.12) unstable; urgency=medium
 
