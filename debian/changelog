@@ -8,6 +8,7 @@ grub2-fll-fromiso (0.6.0) UNRELEASED; urgency=medium
     translate grub-efi, systemd-boot, and rEFInd configurations to
     fromiso.
   * Depend on mtools and xorriso.
+  * Add myself to copyright holders of 60_fll-fromiso.
 
  -- Kel Modderman <kelvmod@gmail.com>  Sun, 24 May 2026 23:14:56 +1000
 
