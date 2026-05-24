@@ -27,7 +27,9 @@ Package: grub2-fll-fromiso
 Architecture: all
 Depends: ${misc:Depends},
  genisoimage,
- grub-pc | grub-efi-amd64 | grub-efi-ia32
+ grub-pc | grub-efi-amd64 | grub-efi-ia32,
+ mtools,
+ xorriso
 Description: update-grub (grub2) plugin for fullstory fromiso
  Automatically adds and updates fullstory fromiso snippets for grub.cfg of the
  GRand Unified Bootloader, version 2.

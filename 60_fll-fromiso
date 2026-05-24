@@ -25,7 +25,7 @@ libdir=${exec_prefix}/lib
 
 # override tool behaviour through /etc/default/grub2-fll-fromiso
 if [ -r /etc/default/grub2-fll-fromiso ]; then
-	. /etc/default/grub2-fll-fromiso 
+	. /etc/default/grub2-fll-fromiso
 fi
 
 FLL_GRUB2_ISO_LOCATION="${FLL_GRUB2_ISO_LOCATION:-"/srv/ISO"}"
@@ -40,6 +40,307 @@ ISOINFO="$(which isoinfo)"
 if [ -z "${ISOINFO}" ]; then
 	exit 1
 fi
+
+# osirrox (xorriso) and mdir/mcopy (mtools) are needed for ESP-based ISO layouts
+OSIRROX="$(which osirrox)"
+if [ -z "${OSIRROX}" ]; then
+	exit 1
+fi
+
+MDIR="$(which mdir)"
+if [ -z "${MDIR}" ]; then
+	exit 1
+fi
+
+MCOPY="$(which mcopy)"
+if [ -z "${MCOPY}" ]; then
+	exit 1
+fi
+
+# Strip from an options string any key=value overridden by CMDLINE, and
+# persist_uuid. Reads the options string as $1, prints the result to stdout.
+strip_iso_options() {
+	local options="$1"
+	options="$(echo "${options}" | sed 's/persist_uuid=[^ ]*//g')"
+	for kv in ${CMDLINE}; do
+		case "${kv}" in
+			*=*) options="$(echo "${options}" | sed "s/${kv%%=*}=[^ ]*//g")" ;;
+		esac
+	done
+	echo "${options}" | sed 's/  */ /g; s/^ //; s/ $//'
+}
+
+# Extract efi.img from an ISO into a temp file using osirrox.
+# Prints the path to the extracted file, or nothing on failure.
+# The caller is responsible for deleting the file when done.
+extract_efi_img() {
+	local iso="$1"
+	local efi_tmp
+	efi_tmp="$(mktemp --suffix=.efi.img)"
+	if "${OSIRROX}" -indev "${iso}" -extract /efi.img "${efi_tmp}" \
+			>/dev/null 2>&1 && [ -s "${efi_tmp}" ]; then
+		echo "${efi_tmp}"
+	else
+		rm -f "${efi_tmp}"
+	fi
+}
+
+# Detect the bootloader used by a fll ISO.
+# Returns: grub | grub-efi | systemd-boot | refind | unknown
+detect_iso_bootloader() {
+	local iso="$1"
+	local efi_img="$2"   # path to extracted efi.img, or empty
+
+	# grub (BIOS hybrid): kernels.cfg on the ISO9660 layer
+	if "${ISOINFO}" -R -i "${iso}" -f 2>/dev/null \
+			| grep -q '^/boot/grub/kernels.cfg$'; then
+		echo "grub"
+		return
+	fi
+
+	# ESP-based: distinguish by FAT contents
+	if [ -n "${efi_img}" ]; then
+		# grub-efi: kernels.cfg inside FAT under /boot/grub/
+		if "${MDIR}" -i "${efi_img}" '::/boot/grub/kernels.cfg' >/dev/null 2>&1; then
+			echo "grub-efi"
+			return
+		fi
+		# systemd-boot: /loader/loader.conf inside FAT
+		if "${MDIR}" -i "${efi_img}" '::/loader/loader.conf' >/dev/null 2>&1; then
+			echo "systemd-boot"
+			return
+		fi
+		# refind: /EFI/BOOT/refind.conf inside FAT
+		if "${MDIR}" -i "${efi_img}" '::/EFI/BOOT/refind.conf' >/dev/null 2>&1; then
+			echo "refind"
+			return
+		fi
+	fi
+
+	echo "unknown"
+}
+
+# Internal shared awk processor for grub kernels.cfg content.
+# Reads kernels.cfg from stdin and emits GRUB menuentry stanzas.
+# When efi=1 the double-loopback layout for grub-efi ISOs is used;
+# when efi=0 (default) the single-loopback layout for BIOS hybrid ISOs is used.
+_fromiso_grub_awk() {
+	local cur_fromhd="$1"
+	local stripped_path="$2"
+	local iso_label="$3"
+	local boot_cache="$4"
+	local efi="${5:-0}"
+
+	awk -v fromhd="${cur_fromhd}" -v fromiso="${stripped_path}" \
+		-v iso_image="${iso_label}" -v boot_cache="${boot_cache}" \
+		-v cmdline="${CMDLINE}" -v submenu="${FLL_GRUB2_SUBMENU}" \
+		-v efi="${efi}" \
+	'BEGIN {
+		lines = 0
+		# Path prefix for linux/initrd lines and the regex to match them
+		if (efi) {
+			pfx   = "(efiloop)/"
+			lmatch = "\\(efiloop\\)/"
+		} else {
+			pfx   = "(loop)/boot/"
+			lmatch = "\\(loop\\)/boot/"
+		}
+	}
+	{
+		sub(/^[ \t]+/, "", $0)
+		if (efi) {
+			# kernels.cfg paths are relative to FAT root: /chroot/vmlinuz
+			sub(/^linux \//, "linux (efiloop)/", $0)
+			sub(/^initrd \//, "initrd (efiloop)/", $0)
+		} else {
+			sub(/\/boot/, "(loop)/boot", $0)
+		}
+		sub(/[ ]+\$kopts$/, "", $0)
+		if (/menuentry/ && !/find.none/) {
+			if (submenu == "true")
+				sub(/"/, "\"", $0)
+			else
+				sub(/"/, "\"" iso_image " ", $0)
+			kernels[++lines] = sprintf("%s\n", $0)
+			kernels[++lines] = sprintf("\tinsmod iso9660\n")
+			kernels[++lines] = sprintf("%s\n", boot_cache)
+			kernels[++lines] = sprintf("\tloopback loop %s\n", fromiso)
+			if (efi)
+				kernels[++lines] = sprintf("\tloopback efiloop (loop)/efi.img\n")
+		}
+		if ($0 ~ lmatch ".*vmlinuz") {
+			n = split(cmdline, cheatcode, " ")
+			for (i = 1; i <= n; i++) {
+				if (cheatcode[i] ~ /=$/)
+					sub(cheatcode[i], "", cmdline)
+				else {
+					eq = index(cheatcode[i], "=")
+					if (eq > 0)
+						gsub(substr(cheatcode[i], 1, eq) "[^ ]*", "", $0)
+					else
+						sub(cheatcode[i], "", $0)
+				}
+			}
+			gsub(/[ ]+/, " ", $0)
+			gsub(/persist_uuid=[[:alnum:]-]+ /, "", $0)
+			gsub(/[ ]+$/, "", cmdline)
+			kernels[++lines] = sprintf("\t%s fromhd=%s fromiso=%s %s\n",
+				$0, fromhd, fromiso, cmdline)
+		}
+		if ($0 ~ lmatch ".*initrd") {
+			kernels[++lines] = sprintf("\t%s\n}\n", $0)
+		}
+	}
+	END {
+		if (lines == 0)
+			exit(0)
+		for (line = 1; line <= lines; line++)
+			printf kernels[line]
+	}'
+}
+
+fromiso_stanzas_grub_hybrid() {
+	local iso_image="$1"
+	local cur_fromhd="$2"
+	local stripped_path="$3"
+	local boot_cache="$4"
+
+	${ISOINFO} -R -i "${iso_image}" -x /boot/grub/kernels.cfg 2>/dev/null | \
+		_fromiso_grub_awk "${cur_fromhd}" "${stripped_path}" \
+			"$(basename "${iso_image}")" "${boot_cache}" 0
+}
+
+fromiso_stanzas_grub_efi() {
+	local iso_image="$1"
+	local efi_img="$2"
+	local cur_fromhd="$3"
+	local stripped_path="$4"
+	local boot_cache="$5"
+
+	"${MCOPY}" -o -i "${efi_img}" '::/boot/grub/kernels.cfg' - 2>/dev/null | \
+		_fromiso_grub_awk "${cur_fromhd}" "${stripped_path}" \
+			"$(basename "${iso_image}")" "${boot_cache}" 1
+}
+
+fromiso_stanzas_systemd_boot() {
+	local iso_image="$1"
+	local efi_img="$2"
+	local cur_fromhd="$3"
+	local stripped_path="$4"
+	local boot_cache="$5"
+
+	# Extract all loader entries from the FAT image into a temp dir
+	local entries_tmp
+	entries_tmp="$(mktemp -d)"
+	"${MCOPY}" -o -s -i "${efi_img}" '::/loader/entries' "${entries_tmp}" \
+		>/dev/null 2>&1 || true
+
+	local entries_dir="${entries_tmp}/entries"
+	if [ ! -d "${entries_dir}" ]; then
+		rm -rf "${entries_tmp}"
+		return
+	fi
+
+	for entry in "${entries_dir}"/*.conf; do
+		[ -f "${entry}" ] || continue
+
+		local title="" linux="" initrd="" options=""
+		while IFS= read -r line; do
+			case "${line}" in
+				title\ *)   title="${line#title   }"   ;;
+				linux\ *)   linux="${line#linux   }"   ;;
+				initrd\ *)  initrd="${line#initrd  }"  ;;
+				options\ *) options="${line#options }"  ;;
+			esac
+		done < "${entry}"
+
+		[ -z "${linux}" ] && continue
+
+		options="$(strip_iso_options "${options}")"
+
+		local iso_label
+		iso_label="$(basename "${iso_image}")"
+
+		if [ "${FLL_GRUB2_SUBMENU}" != "true" ]; then
+			title="${iso_label} ${title}"
+		fi
+
+		printf 'menuentry "%s" {\n' "${title}"
+		printf '\tinsmod iso9660\n'
+		printf '%s\n' "${boot_cache}"
+		printf '\tloopback loop %s\n' "${stripped_path}"
+		printf '\tloopback efiloop (loop)/efi.img\n'
+		printf '\tlinux (efiloop)%s %s fromhd=%s fromiso=%s %s\n' \
+			"${linux}" "${options}" "${cur_fromhd}" "${stripped_path}" "${CMDLINE}"
+		printf '\tinitrd (efiloop)%s\n' "${initrd}"
+		printf '}\n'
+	done
+
+	rm -rf "${entries_tmp}"
+}
+
+fromiso_stanzas_refind() {
+	local iso_image="$1"
+	local efi_img="$2"
+	local cur_fromhd="$3"
+	local stripped_path="$4"
+	local boot_cache="$5"
+
+	local conf_tmp
+	conf_tmp="$(mktemp)"
+	"${MCOPY}" -o -i "${efi_img}" '::/EFI/BOOT/refind.conf' - \
+		>"${conf_tmp}" 2>/dev/null || true
+	[ -s "${conf_tmp}" ] || { rm -f "${conf_tmp}"; return; }
+
+	local iso_label
+	iso_label="$(basename "${iso_image}")"
+
+	local in_entry=0
+	local title="" linux="" initrd="" options=""
+	while IFS= read -r line; do
+		line="$(echo "${line}" | sed 's/^[[:space:]]*//')"
+		case "${line}" in
+			menuentry\ \"*)
+				in_entry=1
+				title="${line#*\"}"
+				title="${title%%\"*}"
+				linux=""; initrd=""; options=""
+				;;
+			loader\ *)
+				linux="${line#loader }"
+				;;
+			initrd\ *)
+				initrd="${line#initrd }"
+				;;
+			options\ *)
+				options="${line#options }"
+				options="${options#\"}"
+				options="${options%\"}"
+				;;
+			"}")
+				if [ "${in_entry}" = "1" ] && [ -n "${linux}" ]; then
+					options="$(strip_iso_options "${options}")"
+					if [ "${FLL_GRUB2_SUBMENU}" != "true" ]; then
+						title="${iso_label} ${title}"
+					fi
+					printf 'menuentry "%s" {\n' "${title}"
+					printf '\tinsmod iso9660\n'
+					printf '%s\n' "${boot_cache}"
+					printf '\tloopback loop %s\n' "${stripped_path}"
+					printf '\tloopback efiloop (loop)/efi.img\n'
+					printf '\tlinux (efiloop)%s %s fromhd=%s fromiso=%s %s\n' \
+						"${linux}" "${options}" "${cur_fromhd}" "${stripped_path}" "${CMDLINE}"
+					printf '\tinitrd (efiloop)%s\n' "${initrd}"
+					printf '}\n'
+				fi
+				in_entry=0
+				title=""; linux=""; initrd=""; options=""
+				;;
+		esac
+	done < "${conf_tmp}"
+
+	rm -f "${conf_tmp}"
+}
 
 # find ISO
 for location in $FLL_GRUB2_ISO_LOCATION; do
@@ -56,12 +357,14 @@ fi
 
 # assemble cmdline
 CMDLINE="lang=${FLL_GRUB2_LANG} tz=${FLL_GRUB2_TZ} ${FLL_GRUB2_CHEATCODE} "
+BASE_CMDLINE="${CMDLINE}"
 
 # create a temp device.map as the actual can be not uptodate
 DEVICE_MAP_TMP=$(mktemp)
 grub-mkdevicemap -m "${DEVICE_MAP_TMP}"
 
 for iso_image in $FROMISO; do
+	CMDLINE="${BASE_CMDLINE}"
 	cur_device="$(grub-probe --device-map=${DEVICE_MAP_TMP} --target=device ${iso_image})"
 	boot_cache="$(prepare_grub_to_access_device ${cur_device} | sed -e "s/^/\t/")"
 	if [ "$(grub-probe -t abstraction --device ${cur_device} | sed -e 's,.*\(lvm\).*,\1,')" = "lvm" ]; then
@@ -99,83 +402,62 @@ for iso_image in $FROMISO; do
 
 	echo "Found fromiso: $(basename ${iso_image}) on ${cur_device}: ${stripped_path}" >&2
 
-	if ${ISOINFO} -R -i ${iso_image} -f 2>/dev/null | grep -q /boot/grub/kernels.cfg; then
-		${ISOINFO} -R -i ${iso_image} -x /boot/grub/kernels.cfg 2>/dev/null | \
-			awk -v fromhd="${cur_fromhd}" -v fromiso="${stripped_path}" \
-				-v iso_image="$(basename ${iso_image})" -v boot_cache="${boot_cache}" \
-				-v cmdline="${CMDLINE}" -v submenu="${FLL_GRUB2_SUBMENU}" \
-			'BEGIN {
-				lines = 0
-			}
-			{
-				sub(/^[ \t]+/, "", $0)
-				sub(/\/boot/, "(loop)/boot", $0)
-				sub(/[ ]+\$kopts$/, "", $0)
-				if (/menuentry/ && !/find.none/) {
-					if (submenu == "true")
-						sub(/"/, "\"", $0)
-					else
-						sub(/"/, "\"" iso_image " ", $0)
-					kernels[++lines] = sprintf("%s\n", $0)
-					kernels[++lines] = sprintf("\tinsmod iso9660\n")
-					kernels[++lines] = sprintf("%s\n", boot_cache)
-					kernels[++lines] = sprintf("\tloopback loop %s\n", fromiso)
-				}
-				if (/\(loop\)\/boot\/vmlinuz/) {
-					n = split(cmdline, cheatcode, " ")
-					for (i = 1; i <= n; i++) {
-						if (cheatcode[i] ~ /=$/)
-							sub(cheatcode[i], "", cmdline)
-						else
-							sub(cheatcode[i], "", $0)
-					}
-					gsub(/[ ]+/, " ", $0)
-					gsub(/persist_uuid=[[:alnum:]-]+ /, "", $0)
-					gsub(/[ ]+$/, "", cmdline)
-					kernels[++lines] = sprintf("\t%s fromhd=%s fromiso=%s %s\n",
-						$0, fromhd, fromiso, cmdline)
-				}
-				if (/\(loop\)\/boot\/initrd.img/) {
-					kernels[++lines] = sprintf("\t%s\n}\n", $0)
-				}
-			}
-			END {
-				if (lines == 0)
-					exit(0)
-				if (submenu == "true")
-					printf "submenu \"%s\" {\n", iso_image
-				for (line = 1; line <= lines; line++)
-					printf kernels[line]
-				if (submenu == "true")
-					printf "}\n"
-			}'
-	else
-		kernels="$( ( ${ISOINFO} -J -f -i ${iso_image} 2>/dev/null || \
-			${ISOINFO} -R -f -i ${iso_image} 2>/dev/null || ${ISOINFO} -f -i ${iso_image} ) | \
-			sed -n -e 's|\;[0-9]*$||' -e 'y|ABCDEFGHIJKLMNOPQRSTUVWXYZ|abcdefghijklmnopqrstuvwxyz|' \
-			-e 's|/boot/\(vmlinuz.*\)|\1|p')"
-		if ( ${ISOINFO} -J -l -i ${iso_image} 2> /dev/null || \
-			${ISOINFO} -R -l -i ${iso_image} 2>/dev/null || ${ISOINFO} -l -i ${iso_image}) | \
-			tr A-Z a-z | grep -q initrd\\.img; then
-			initrd_suffix=".img"
-		fi
-		if [ -n "${kernels}" ] && [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
-			printf "submenu \"$(basename ${iso_image} .iso)\" {\n"
-		fi
-		for kernel in ${kernels}; do
-			printf "menuentry \"$(basename ${iso_image} .iso) (${kernel#vmlinuz\-})\" {\n"
-			printf "\tinsmod iso9660\n"
-			printf '%s\n' "${boot_cache}"
+	# Extract efi.img once (empty string if absent or tools unavailable)
+	efi_img="$(extract_efi_img "${iso_image}")"
 
-			cat << EOF
-	loopback loop ${stripped_path}
-	linux (loop)/boot/${kernel} fromhd=${cur_fromhd} fromiso=${stripped_path} $CMDLINE
-	initrd (loop)/boot/initrd${initrd_suffix}${kernel#vmlinuz}
-}
-EOF
-		done
-		[ -n "${kernels}" ] && [ "${FLL_GRUB2_SUBMENU}" = "true" ] && printf "}\n"
-	fi
+	bootloader="$(detect_iso_bootloader "${iso_image}" "${efi_img}")"
+
+	echo "Detected bootloader: ${bootloader} in $(basename ${iso_image})" >&2
+
+	case "${bootloader}" in
+		grub)
+			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
+				printf 'submenu "%s" {\n' "$(basename ${iso_image})"
+			fi
+			fromiso_stanzas_grub_hybrid "${iso_image}" \
+				"${cur_fromhd}" "${stripped_path}" "${boot_cache}"
+			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
+				printf '}\n'
+			fi
+			;;
+		grub-efi)
+			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
+				printf 'submenu "%s" {\n' "$(basename ${iso_image})"
+			fi
+			fromiso_stanzas_grub_efi "${iso_image}" "${efi_img}" \
+				"${cur_fromhd}" "${stripped_path}" "${boot_cache}"
+			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
+				printf '}\n'
+			fi
+			;;
+		systemd-boot)
+			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
+				printf 'submenu "%s" {\n' "$(basename ${iso_image})"
+			fi
+			fromiso_stanzas_systemd_boot "${iso_image}" "${efi_img}" \
+				"${cur_fromhd}" "${stripped_path}" "${boot_cache}"
+			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
+				printf '}\n'
+			fi
+			;;
+		refind)
+			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
+				printf 'submenu "%s" {\n' "$(basename ${iso_image})"
+			fi
+			fromiso_stanzas_refind "${iso_image}" "${efi_img}" \
+				"${cur_fromhd}" "${stripped_path}" "${boot_cache}"
+			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
+				printf '}\n'
+			fi
+			;;
+		unknown)
+			# Unrecognised layout: skip with a diagnostic
+			echo "Skipping $(basename ${iso_image}): unrecognised bootloader layout" >&2
+			;;
+	esac
+
+	# Clean up extracted efi.img temp file
+	[ -n "${efi_img}" ] && rm -f "${efi_img}"
 done
 
 rm -f "${DEVICE_MAP_TMP}"
