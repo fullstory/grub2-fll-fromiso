@@ -1,7 +1,4 @@
-grub2-fll-fromiso (0.6.1) UNRELEASED; urgency=medium
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+grub2-fll-fromiso (0.6.1) unstable; urgency=medium
 
   [ Kel Modderman ]
   * fll-fromiso: override tz, lang and custom cheatcodes only when set
