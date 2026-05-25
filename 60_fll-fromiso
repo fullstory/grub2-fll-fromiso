@@ -357,7 +357,10 @@ if [ -z "${FROMISO}" ]; then
 fi
 
 # assemble cmdline
-CMDLINE="lang=${FLL_GRUB2_LANG} tz=${FLL_GRUB2_TZ} ${FLL_GRUB2_CHEATCODE} "
+CMDLINE=""
+[ -n "${FLL_GRUB2_LANG}" ]      && CMDLINE="lang=${FLL_GRUB2_LANG} "
+[ -n "${FLL_GRUB2_TZ}" ]        && CMDLINE="${CMDLINE}tz=${FLL_GRUB2_TZ} "
+[ -n "${FLL_GRUB2_CHEATCODE}" ] && CMDLINE="${CMDLINE}${FLL_GRUB2_CHEATCODE} "
 BASE_CMDLINE="${CMDLINE}"
 
 # create a temp device.map as the actual can be not uptodate
