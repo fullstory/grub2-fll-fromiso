@@ -343,6 +343,14 @@ fromiso_stanzas_refind() {
 	rm -f "${conf_tmp}"
 }
 
+submenu_open() {
+	[ "${FLL_GRUB2_SUBMENU}" = "true" ] && printf 'submenu "%s" {\n' "$1"
+}
+
+submenu_close() {
+	[ "${FLL_GRUB2_SUBMENU}" = "true" ] && printf '}\n'
+}
+
 # find ISO
 for location in $FLL_GRUB2_ISO_LOCATION; do
 	[ -d "${location}" ] || continue
@@ -413,46 +421,32 @@ for iso_image in $FROMISO; do
 
 	echo "Detected bootloader: ${bootloader} in $(basename ${iso_image})" >&2
 
+	iso_label="$(basename "${iso_image}")"
+
 	case "${bootloader}" in
 		grub)
-			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
-				printf 'submenu "%s" {\n' "$(basename ${iso_image})"
-			fi
+			submenu_open "${iso_label}"
 			fromiso_stanzas_grub_hybrid "${iso_image}" \
 				"${cur_fromhd}" "${stripped_path}" "${boot_cache}"
-			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
-				printf '}\n'
-			fi
+			submenu_close
 			;;
 		grub-efi)
-			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
-				printf 'submenu "%s" {\n' "$(basename ${iso_image})"
-			fi
+			submenu_open "${iso_label}"
 			fromiso_stanzas_grub_efi "${iso_image}" "${efi_img}" \
 				"${cur_fromhd}" "${stripped_path}" "${boot_cache}"
-			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
-				printf '}\n'
-			fi
+			submenu_close
 			;;
 		systemd-boot)
-			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
-				printf 'submenu "%s" {\n' "$(basename ${iso_image})"
-			fi
+			submenu_open "${iso_label}"
 			fromiso_stanzas_systemd_boot "${iso_image}" "${efi_img}" \
 				"${cur_fromhd}" "${stripped_path}" "${boot_cache}"
-			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
-				printf '}\n'
-			fi
+			submenu_close
 			;;
 		refind)
-			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
-				printf 'submenu "%s" {\n' "$(basename ${iso_image})"
-			fi
+			submenu_open "${iso_label}"
 			fromiso_stanzas_refind "${iso_image}" "${efi_img}" \
 				"${cur_fromhd}" "${stripped_path}" "${boot_cache}"
-			if [ "${FLL_GRUB2_SUBMENU}" = "true" ]; then
-				printf '}\n'
-			fi
+			submenu_close
 			;;
 		unknown)
 			# Unrecognised layout: skip with a diagnostic
