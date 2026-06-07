@@ -6,6 +6,8 @@ grub2-fll-fromiso (0.6.3) UNRELEASED; urgency=medium
   [ Kel Modderman ]
   * fll-fromiso: protect against premature shell exit when
     FLL_GRUB2_SUBMENU is unset.
+  * New binary package: grub2-loopback-from iso for generating boot stanzas
+    by delegating to loopback.cfg of live isos which provide it.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 07 Jun 2026 00:19:39 +0200
 

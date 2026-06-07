@@ -7,6 +7,11 @@ Files: *
 Copyright: 2009, Joaquim Boura <x-un-i@sapo.pt>
            2009-2024, Stefan Lippers-Hollmann <s.l-h@gmx.de>
            2011-2015, Niall Walsh <niallwalsh@celtux.org>
+           2025-2026 Kel Modderman <kelvmod@gmail.com>
+License: GPL-2.0+
+
+Files: 61_loopback-fromiso
+Copyright: 2026 Wolfgang Thumser <wothumser@gmx.de>
 License: GPL-2.0+
 
 License: GPL-2.0+

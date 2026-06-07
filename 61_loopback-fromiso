@@ -1,0 +1,140 @@
+#! /bin/sh -e
+
+# grub-mkconfig helper script.
+#
+# Copyright © 2009 Joaquim Boura <x-un-i@sapo.pt>
+# Copyright © 2009-2015 Stefan Lippers-Hollmann <s.l-h@gmx.de>
+# Copyright © 2011-2015 Niall Walsh <niallwalsh@celtux.org>
+# Copyright © 2026 Wolfgang Thumser <wothumser@gmx.de>
+# Copyright © 2026 Kel Modderman <kelvmod@gmail.com>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# Generates GRUB menu entries for any ISO that ships /boot/grub/loopback.cfg,
+# delegating to the ISO's own GRUB configuration via configfile.
+
+# source common grub2 functions
+prefix=/usr
+exec_prefix=${prefix}
+bindir=${exec_prefix}/bin
+libdir=${exec_prefix}/lib
+. ${libdir}/grub/grub-mkconfig_lib
+
+# override tool behaviour through /etc/default/grub2-loopback-fromiso
+if [ -r /etc/default/grub2-loopback-fromiso ]; then
+	. /etc/default/grub2-loopback-fromiso
+fi
+
+LOOPBACK_ISO_LOCATION="${LOOPBACK_ISO_LOCATION:-"/srv/ISO"}"
+LOOPBACK_ISO_PREFIX="${LOOPBACK_ISO_PREFIX:-"aptosid fullstory"}"
+LOOPBACK_LANG="${LOOPBACK_LANG:-""}"
+LOOPBACK_TZ="${LOOPBACK_TZ:-""}"
+LOOPBACK_CHEATCODE="${LOOPBACK_CHEATCODE:-""}"
+
+# we need isoinfo, bail out if it's not available
+ISOINFO="$(which isoinfo)"
+if [ -z "${ISOINFO}" ]; then
+	exit 1
+fi
+
+# find ISOs
+for location in $LOOPBACK_ISO_LOCATION; do
+	[ -d "${location}" ] || continue
+	for prefix in $LOOPBACK_ISO_PREFIX; do
+		FROMISO="${FROMISO} $(find ${location} -maxdepth 1 -name ${prefix}\*.iso -exec stat --format='%w %n' {} + | sort -rn | cut -d' ' -f4)"
+	done
+done
+
+# no iso found, quit
+if [ -z "${FROMISO}" ]; then
+	exit 0
+fi
+
+# assemble base cmdline; per-ISO additions are appended inside the loop
+# after resetting CMDLINE to BASE_CMDLINE each iteration.
+BASE_CMDLINE=""
+[ -n "${LOOPBACK_LANG}" ]      && BASE_CMDLINE="lang=${LOOPBACK_LANG} "
+[ -n "${LOOPBACK_TZ}" ]        && BASE_CMDLINE="${BASE_CMDLINE}tz=${LOOPBACK_TZ} "
+[ -n "${LOOPBACK_CHEATCODE}" ] && BASE_CMDLINE="${BASE_CMDLINE}${LOOPBACK_CHEATCODE} "
+
+# create a temp device.map as the actual can be not uptodate
+DEVICE_MAP_TMP=$(mktemp)
+grub-mkdevicemap -m "${DEVICE_MAP_TMP}"
+
+for iso_image in $FROMISO; do
+	if ! "${ISOINFO}" -R -i "${iso_image}" -f 2>/dev/null \
+			| grep -q '^/boot/grub/loopback.cfg$'; then
+		continue
+	fi
+
+	CMDLINE="${BASE_CMDLINE}"
+
+	cur_device="$(grub-probe --device-map=${DEVICE_MAP_TMP} --target=device ${iso_image})"
+	boot_cache="$(prepare_grub_to_access_device ${cur_device} | sed -e "s/^/\t/")"
+
+	if [ "$(grub-probe -t abstraction --device ${cur_device} | sed -e 's,.*\(lvm\).*,\1,')" = "lvm" ]; then
+		cur_fromhd="${cur_device}"
+	else
+		cur_fromhd="$(grub-probe --device-map=${DEVICE_MAP_TMP} --target=fs_uuid ${iso_image})"
+		cur_fromhd_fs="$(/sbin/blkid -s TYPE -o value ${cur_device})"
+
+		if [ "x${cur_fromhd_fs}" = "xmsdos" ] || [ "x${cur_fromhd_fs}" = "xntfs" ] || [ "x${cur_fromhd_fs}" = "xvfat" ]; then
+			cur_fromhd="/dev/disk/by-uuid/$(/sbin/blkid -o value -s UUID ${cur_device})"
+		else
+			cur_fromhd="UUID=${cur_fromhd}"
+		fi
+	fi
+
+	case "${cur_device}" in
+		/dev/mapper/luks-*)
+			CMDLINE="${CMDLINE} $(echo ${cur_device} | sed 's#/dev/mapper/luks-#rd.luks.uuid=#')"
+			;;
+	esac
+
+	mountpoint=""
+	subvolume=""
+	while IFS=' ' read dev mount fs opts dump pass; do
+		[ "$mount" = "/" ] && continue
+		case $iso_image in
+			$mount*)
+				[ "$fs" = "btrfs" ] && subvolume=$(echo "$opts" | sed -n 's/.*subvol=\([^,]*\).*/\1/p')
+				mountpoint="$mount"
+				break
+				;;
+		esac
+	done < /proc/mounts
+	stripped_path="${subvolume}${iso_image##$mountpoint}"
+
+	iso_label="$(basename "${iso_image}")"
+
+	echo "Found fromiso: ${iso_label} on ${cur_device}: ${stripped_path}" >&2
+
+	CMDLINE="${CMDLINE} fromhd=${cur_fromhd} fromiso=${stripped_path}"
+
+	printf 'menuentry "Loopback: %s" {\n' "${iso_label}"
+	printf '\tset kopts="%s"\n' "${CMDLINE}"
+	printf '\texport kopts\n'
+	printf '\tset iso_path="%s"\n' "${stripped_path}"
+	printf '\texport iso_path\n'
+	printf '%s\n' "${boot_cache}"
+	printf '\tinsmod iso9660\n'
+	printf '\tloopback loop %s\n' "${stripped_path}"
+	printf '\tinsmod probe\n'
+	printf '\tprobe -u $root --set=buuid\n'
+	printf '\texport buuid\n'
+	printf '\tset root=(loop)\n'
+	printf '\tconfigfile /boot/grub/loopback.cfg\n'
+	printf '}\n'
+
+	echo "Added loopback entry for: ${iso_label}" >&2
+done
+
+rm -f "${DEVICE_MAP_TMP}"
