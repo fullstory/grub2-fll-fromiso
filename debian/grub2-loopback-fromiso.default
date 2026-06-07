@@ -1,0 +1,26 @@
+# Defaults for grub2-loopback-fromiso update-grub helper
+# sourced by grub2's update-grub
+# installed at /etc/default/grub2-loopback-fromiso by the maintainer scripts
+
+#
+# This is a POSIX shell fragment
+#
+
+# specify where to look for the ISO
+# default: /srv/ISO
+#LOOPBACK_GRUB2_ISO_LOCATION="/srv/ISO"
+
+# array for defining ISO prefices --> aptosid-*.iso, non-recursive
+# default: "aptosid- fullstory-"
+#LOOPBACK_GRUB2_ISO_PREFIX="aptosid-"
+
+# set default language
+# default: en_US
+#LOOPBACK_GRUB2_LANG="de_DE"
+
+# override the default timezone.
+# default: UTC
+#LOOPBACK_GRUB2_TZ="Europe/Berlin"
+
+# additional cheatcodes and boot cmdline options
+#LOOPBACK_GRUB2_CHEATCODE=""
