@@ -344,11 +344,11 @@ fromiso_stanzas_refind() {
 }
 
 submenu_open() {
-	[ "${FLL_GRUB2_SUBMENU}" = "true" ] && printf 'submenu "%s" {\n' "$1"
+	[ "${FLL_GRUB2_SUBMENU}" = "true" ] && printf 'submenu "%s" {\n' "$1" || true
 }
 
 submenu_close() {
-	[ "${FLL_GRUB2_SUBMENU}" = "true" ] && printf '}\n'
+	[ "${FLL_GRUB2_SUBMENU}" = "true" ] && printf '}\n' || true
 }
 
 # find ISO

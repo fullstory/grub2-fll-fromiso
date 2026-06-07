@@ -1,6 +1,11 @@
 grub2-fll-fromiso (0.6.3) UNRELEASED; urgency=medium
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
+
+  [ Kel Modderman ]
+  * fll-fromiso: protect against premature shell exit when
+    FLL_GRUB2_SUBMENU is unset.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 07 Jun 2026 00:19:39 +0200
 
