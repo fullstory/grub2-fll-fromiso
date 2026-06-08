@@ -33,11 +33,11 @@ if [ -r /etc/default/grub2-loopback-fromiso ]; then
 	. /etc/default/grub2-loopback-fromiso
 fi
 
-LOOPBACK_ISO_LOCATION="${LOOPBACK_ISO_LOCATION:-"/srv/ISO"}"
-LOOPBACK_ISO_PREFIX="${LOOPBACK_ISO_PREFIX:-"aptosid fullstory"}"
-LOOPBACK_LANG="${LOOPBACK_LANG:-""}"
-LOOPBACK_TZ="${LOOPBACK_TZ:-""}"
-LOOPBACK_CHEATCODE="${LOOPBACK_CHEATCODE:-""}"
+LOOPBACK_GRUB2_ISO_LOCATION="${LOOPBACK_GRUB2_ISO_LOCATION:-"/srv/ISO"}"
+LOOPBACK_GRUB2_ISO_PREFIX="${LOOPBACK_GRUB2_ISO_PREFIX:-"aptosid fullstory"}"
+LOOPBACK_GRUB2_LANG="${LOOPBACK_GRUB2_LANG:-""}"
+LOOPBACK_GRUB2_TZ="${LOOPBACK_GRUB2_TZ:-""}"
+LOOPBACK_GRUB2_CHEATCODE="${LOOPBACK_GRUB2_CHEATCODE:-""}"
 
 # we need isoinfo, bail out if it's not available
 ISOINFO="$(which isoinfo)"
@@ -46,9 +46,9 @@ if [ -z "${ISOINFO}" ]; then
 fi
 
 # find ISOs
-for location in $LOOPBACK_ISO_LOCATION; do
+for location in $LOOPBACK_GRUB2_ISO_LOCATION; do
 	[ -d "${location}" ] || continue
-	for prefix in $LOOPBACK_ISO_PREFIX; do
+	for prefix in $LOOPBACK_GRUB2_ISO_PREFIX; do
 		FROMISO="${FROMISO} $(find ${location} -maxdepth 1 -name ${prefix}\*.iso -exec stat --format='%w %n' {} + | sort -rn | cut -d' ' -f4)"
 	done
 done
@@ -61,9 +61,9 @@ fi
 # assemble base cmdline; per-ISO additions are appended inside the loop
 # after resetting CMDLINE to BASE_CMDLINE each iteration.
 BASE_CMDLINE=""
-[ -n "${LOOPBACK_LANG}" ]      && BASE_CMDLINE="lang=${LOOPBACK_LANG} "
-[ -n "${LOOPBACK_TZ}" ]        && BASE_CMDLINE="${BASE_CMDLINE}tz=${LOOPBACK_TZ} "
-[ -n "${LOOPBACK_CHEATCODE}" ] && BASE_CMDLINE="${BASE_CMDLINE}${LOOPBACK_CHEATCODE} "
+[ -n "${LOOPBACK_GRUB2_LANG}" ]      && BASE_CMDLINE="lang=${LOOPBACK_GRUB2_LANG} "
+[ -n "${LOOPBACK_GRUB2_TZ}" ]        && BASE_CMDLINE="${BASE_CMDLINE}tz=${LOOPBACK_GRUB2_TZ} "
+[ -n "${LOOPBACK_GRUB2_CHEATCODE}" ] && BASE_CMDLINE="${BASE_CMDLINE}${LOOPBACK_GRUB2_CHEATCODE} "
 
 # create a temp device.map as the actual can be not uptodate
 DEVICE_MAP_TMP=$(mktemp)
