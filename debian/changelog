@@ -1,7 +1,4 @@
-grub2-fll-fromiso (0.6.5) UNRELEASED; urgency=medium
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+grub2-fll-fromiso (0.6.5) unstable; urgency=medium
 
   [ Kel Modderman ]
   * loopback: fix inverted /boot/grub vs /boot/grub2 logic
