@@ -118,7 +118,7 @@ detect_iso_bootloader() {
 		fi
 	fi
 
-	echo "unknown"
+	echo ""
 }
 
 # Internal shared awk processor for grub kernels.cfg content.
@@ -418,41 +418,36 @@ for iso_image in $FROMISO; do
 	efi_img="$(extract_efi_img "${iso_image}")"
 
 	bootloader="$(detect_iso_bootloader "${iso_image}" "${efi_img}")"
-
-	echo "Detected bootloader: ${bootloader} in $(basename ${iso_image})" >&2
+	if [ -n "${bootloader}" ]; then
+		echo "Detected bootloader: ${bootloader} in $(basename ${iso_image})" >&2
+	else
+		echo "Skipping $(basename ${iso_image}): unrecognised bootloader layout" >&2
+		continue
+	fi
 
 	iso_label="$(basename "${iso_image}")"
+	submenu_open "${iso_label}"
 
 	case "${bootloader}" in
 		grub)
-			submenu_open "${iso_label}"
 			fromiso_stanzas_grub_hybrid "${iso_image}" \
 				"${cur_fromhd}" "${stripped_path}" "${boot_cache}"
-			submenu_close
 			;;
 		grub-efi)
-			submenu_open "${iso_label}"
 			fromiso_stanzas_grub_efi "${iso_image}" "${efi_img}" \
 				"${cur_fromhd}" "${stripped_path}" "${boot_cache}"
-			submenu_close
 			;;
 		systemd-boot)
-			submenu_open "${iso_label}"
 			fromiso_stanzas_systemd_boot "${iso_image}" "${efi_img}" \
 				"${cur_fromhd}" "${stripped_path}" "${boot_cache}"
-			submenu_close
 			;;
 		refind)
-			submenu_open "${iso_label}"
 			fromiso_stanzas_refind "${iso_image}" "${efi_img}" \
 				"${cur_fromhd}" "${stripped_path}" "${boot_cache}"
-			submenu_close
-			;;
-		unknown)
-			# Unrecognised layout: skip with a diagnostic
-			echo "Skipping $(basename ${iso_image}): unrecognised bootloader layout" >&2
 			;;
 	esac
+
+	submenu_close
 
 	# Clean up extracted efi.img temp file
 	[ -n "${efi_img}" ] && rm -f "${efi_img}"

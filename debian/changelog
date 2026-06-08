@@ -1,3 +1,10 @@
+grub2-fll-fromiso (0.6.4) UNRELEASED; urgency=medium
+
+  [ Kel Modderman ]
+  * fll-fromiso: streamline submenu opening and closing.
+
+ -- Kel Modderman <kelvmod@gmail.com>  Mon, 08 Jun 2026 12:14:55 +1000
+
 grub2-fll-fromiso (0.6.3) unstable; urgency=medium
 
   [ Kel Modderman ]
