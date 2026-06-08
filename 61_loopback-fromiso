@@ -72,6 +72,13 @@ grub-mkdevicemap -m "${DEVICE_MAP_TMP}"
 for iso_image in $FROMISO; do
 	if ! "${ISOINFO}" -R -i "${iso_image}" -f 2>/dev/null \
 			| grep -q '^/boot/grub/loopback.cfg$'; then
+		LOOPBACKCFG="/boot/grub/loopback.cfg"
+	elif ! "${ISOINFO}" -R -i "${iso_image}" -f 2>/dev/null \
+			| grep -q '^/boot/grub2/loopback.cfg$'; then
+		# Fedora trying to be special...
+		LOOPBACKCFG="/boot/grub2/loopback.cfg"
+	fi
+	if [ -z "$LOOPBACKCFG" ]; then
 		continue
 	fi
 
@@ -131,7 +138,7 @@ for iso_image in $FROMISO; do
 	printf '\tprobe -u $root --set=buuid\n'
 	printf '\texport buuid\n'
 	printf '\tset root=(loop)\n'
-	printf '\tconfigfile /boot/grub/loopback.cfg\n'
+	printf '\tconfigfile %s\n' "${LOOPBACKCFG}"
 	printf '}\n'
 
 	echo "Added loopback entry for: ${iso_label}" >&2
