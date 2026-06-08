@@ -13,7 +13,8 @@ Architecture: all
 Depends: ${misc:Depends},
  grub2-fll-fromiso,
  grub2-fedora-fromiso,
- grub2-suse-fromiso
+ grub2-suse-fromiso,
+ grub2-loopback-fromiso
 Description: update-grub (grub2) metapackage for all supported fromiso helpers
  Automatically adds and updates fromiso snippets for grub.cfg of the
  GRand Unified Bootloader, version 2.
