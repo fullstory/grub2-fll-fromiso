@@ -1,7 +1,4 @@
-grub2-fll-fromiso (0.6.3) UNRELEASED; urgency=medium
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+grub2-fll-fromiso (0.6.3) unstable; urgency=medium
 
   [ Kel Modderman ]
   * fll-fromiso: protect against premature shell exit when
