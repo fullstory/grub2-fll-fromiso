@@ -70,10 +70,11 @@ DEVICE_MAP_TMP=$(mktemp)
 grub-mkdevicemap -m "${DEVICE_MAP_TMP}"
 
 for iso_image in $FROMISO; do
-	if ! "${ISOINFO}" -R -i "${iso_image}" -f 2>/dev/null \
+	LOOPBACKCFG=""
+	if "${ISOINFO}" -R -i "${iso_image}" -f 2>/dev/null \
 			| grep -q '^/boot/grub/loopback.cfg$'; then
 		LOOPBACKCFG="/boot/grub/loopback.cfg"
-	elif ! "${ISOINFO}" -R -i "${iso_image}" -f 2>/dev/null \
+	elif "${ISOINFO}" -R -i "${iso_image}" -f 2>/dev/null \
 			| grep -q '^/boot/grub2/loopback.cfg$'; then
 		# Fedora trying to be special...
 		LOOPBACKCFG="/boot/grub2/loopback.cfg"
