@@ -135,9 +135,6 @@ for iso_image in $FROMISO; do
 	printf '%s\n' "${boot_cache}"
 	printf '\tinsmod iso9660\n'
 	printf '\tloopback loop %s\n' "${stripped_path}"
-	printf '\tinsmod probe\n'
-	printf '\tprobe -u $root --set=buuid\n'
-	printf '\texport buuid\n'
 	printf '\tset root=(loop)\n'
 	printf '\tconfigfile %s\n' "${LOOPBACKCFG}"
 	printf '}\n'
