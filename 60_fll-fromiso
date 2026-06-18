@@ -62,7 +62,7 @@ fi
 # persist_uuid. Reads the options string as $1, prints the result to stdout.
 strip_iso_options() {
 	local options="$1"
-	options="$(echo "${options}" | sed 's/persist_uuid=[^ ]*//g')"
+	options="$(echo "${options}" | sed 's/persist_uuid=[^ ]*//g; s/persist_luks_uuid=[^ ]*//g')"
 	for kv in ${CMDLINE}; do
 		case "${kv}" in
 			*=*) options="$(echo "${options}" | sed "s/${kv%%=*}=[^ ]*//g")" ;;
@@ -184,6 +184,7 @@ _fromiso_grub_awk() {
 			}
 			gsub(/[ ]+/, " ", $0)
 			gsub(/persist_uuid=[[:alnum:]-]+ /, "", $0)
+			gsub(/persist_luks_uuid=[[:alnum:]-]+ /, "", $0)
 			gsub(/[ ]+$/, "", cmdline)
 			kernels[++lines] = sprintf("\t%s fromhd=%s fromiso=%s %s\n",
 				$0, fromhd, fromiso, cmdline)
