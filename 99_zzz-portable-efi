@@ -39,9 +39,10 @@ else
 	touch "${beeb}/fullstory"
 fi
 
-for platform in i386-efi x86_64-efi ; do
+for platform in i386-efi x86_64-efi arm64-efi ; do
 	filename="bootx64"
 	[ "${platform}" = "i386-efi" ] && filename="bootia32"
+	[ "${platform}" = "arm64-efi" ] && filename="bootaa64"
 	[ -e /usr/lib/grub/${platform} ] && grub-mkstandalone \
 		-o ${beeb}/${filename}.efi --compress=xz  -O ${platform} \
 		/boot/grub/grub.cfg=/boot/grub/grub.cfg.new 2>&1 > /dev/null

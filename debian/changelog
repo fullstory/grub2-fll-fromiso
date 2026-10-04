@@ -1,6 +1,11 @@
 grub2-fll-fromiso (0.6.7) UNRELEASED; urgency=medium
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
+
+  [ Kel Modderman ]
+  * Accept grub-efi-arm64 and build a bootaa64.efi portable loader, so
+    arm64 UEFI systems can install this.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 19 Jun 2026 00:09:12 +0200
 
