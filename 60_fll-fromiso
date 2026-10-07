@@ -399,19 +399,7 @@ for iso_image in $FROMISO; do
 			;;
 	esac
 
-	mountpoint=""
-	subvolume=""
-	while IFS=' ' read dev mount fs opts dump pass; do
-		[ "$mount" = "/" ] && continue
-		case $iso_image in
-			$mount*)
-			[ "$fs" = "btrfs" ] && subvolume=$(echo "$opts" | sed -n 's/.*subvol=\([^,]*\).*/\1/p')
-			mountpoint="$mount"
-			break
-			;;
-		esac
-	done < /proc/mounts
-	stripped_path="${subvolume}${iso_image##$mountpoint}"
+	stripped_path="$(make_system_path_relative_to_its_root "${iso_image}")"
 
 	echo "Found fromiso: $(basename ${iso_image}) on ${cur_device}: ${stripped_path}" >&2
 
