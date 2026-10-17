@@ -49,7 +49,7 @@ fi
 for location in $LOOPBACK_GRUB2_ISO_LOCATION; do
 	[ -d "${location}" ] || continue
 	for prefix in $LOOPBACK_GRUB2_ISO_PREFIX; do
-		FROMISO="${FROMISO} $(find ${location} -maxdepth 1 -name ${prefix}\*.iso -exec stat --format='%w %n' {} + | sort -rn | cut -d' ' -f4)"
+		FROMISO="${FROMISO} $(find -H ${location} -maxdepth 1 -name ${prefix}\*.iso -exec stat --format='%w %n' {} + | sort -rn | cut -d' ' -f4)"
 	done
 done
 

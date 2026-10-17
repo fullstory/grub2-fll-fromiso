@@ -44,7 +44,7 @@ fi
 for location in $FEDORA_GRUB2_ISO_LOCATION; do
 	if [ -d "${location}" ]; then
 		for prefix in $FEDORA_GRUB2_ISO_PREFIX; do
-			FROMISO="${FROMISO} $(find ${location} -maxdepth 1 -name ${prefix}\*.iso | sort -n)"
+			FROMISO="${FROMISO} $(find -H ${location} -maxdepth 1 -name ${prefix}\*.iso | sort -n)"
 		done
 	fi
 done
