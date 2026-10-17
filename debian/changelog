@@ -1,7 +1,4 @@
-grub2-fll-fromiso (0.6.9) UNRELEASED; urgency=medium
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+grub2-fll-fromiso (0.6.9) unstable; urgency=medium
 
   [ Kel Modderman ]
   * Follow a symlinked ISO location, so one given without a trailing
